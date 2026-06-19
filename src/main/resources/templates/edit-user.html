@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pouso - Gerenciar conta</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/beercss@3.5.1/dist/cdn/beer.min.css" rel="stylesheet">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/beercss@3.5.1/dist/cdn/beer.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/edit-user.css}">
+</head>
+<body class="light">
+
+    <header class="surface-container-low elevation-1">
+        <button class="circle flat"><i>menu</i></button>
+        <h5 class="max row cross-center gap">
+            <i class="amber-text">pets</i>
+            <strong>Pouso</strong>
+        </h5>
+        <button class="circle flat">
+            <img class="circle" src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar"/>
+        </button>
+    </header>
+
+    <div class="main-layout">
+        
+        <nav class="left min">
+            <button class="transparent circle active">
+                <i>search</i>
+            </button>
+            <div class="space"></div>
+            <button class="transparent column cross-center">
+                <i>pets</i>
+                <label>Meus pets</label>
+            </button>
+            <button class="transparent column cross-center">
+                <i>home</i>
+                <label>Adoções</label>
+            </button>
+        </nav>
+
+        <main class="content-container">
+            
+            <div class="row cross-center gap margin-bottom">
+                <button type="button" class="circle flat"><i>arrow_back</i></button>
+                <h4>Gerenciar conta</h4>
+            </div>
+
+            <div class="grid large-space">
+                
+                <div class="s12 m4 profile-section">
+                    <div class="big-avatar">
+                        <i>account_circle</i>
+                    </div>
+                    <div class="row gap">
+                        <button type="button" class="border">Trocar foto</button>
+                        <button type="button" class="border">Remover</button>
+                    </div>
+                </div>
+
+                <div class="s12 m8">
+                    <form th:action="@{/conta/salvar}" method="POST">
+                        
+                        <div class="row cross-center justify-between margin-bottom">
+                            <h5>Dados pessoais</h5>
+                            <button type="button" class="circle flat"><i>more_vert</i></button>
+                        </div>
+                        
+                        <div class="form-grid margin-bottom">
+                            <div class="col-12">
+                                <div class="field label filled ext">
+                                    <input type="text" th:id="nome" th:name="nome" th:value="${usuario?.nome ?: 'Input'}" placeholder=" ">
+                                    <label>Nome Completo</label>
+                                    <i>cancel</i>
+                                </div>
+                            </div>
+                            
+                            <div class="col-6">
+                                <div class="field label filled ext">
+                                    <input type="text" th:id="cpf" th:name="cpf" th:value="${usuario?.cpf ?: 'Input'}" placeholder=" ">
+                                    <label>CPF</label>
+                                    <i>cancel</i>
+                                </div>
+                            </div>
+                            
+                            <div class="col-6">
+                                <div class="field label border ext">
+                                    <input type="text" th:id="genero" th:name="genero" th:value="${usuario?.genero ?: 'Input'}" placeholder=" ">
+                                    <label>Gênero</label>
+                                    <i>cancel</i>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <div class="field label filled ext">
+                                    <input type="email" th:id="email" th:name="email" th:value="${usuario?.email ?: 'Input'}" placeholder=" ">
+                                    <label>E-mail</label>
+                                    <i>cancel</i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h5 class="margin-bottom">Perfil</h5>
+                        <div class="form-grid margin-bottom">
+                            <div class="col-6">
+                                <div class="field label filled ext">
+                                    <input type="text" th:id="username" th:name="username" th:value="${usuario?.username ?: 'Input'}" placeholder=" ">
+                                    <label>Username</label>
+                                    <i>cancel</i>
+                                </div>
+                            </div>
+                            
+                            <div class="col-6">
+                                <div class="field label filled ext">
+                                    <input type="text" th:id="telefone" th:name="telefone" th:value="${usuario?.telefone ?: 'Input'}" placeholder=" ">
+                                    <label>Telefone</label>
+                                    <i>cancel</i>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <div class="field label filled ext">
+                                    <input type="text" th:id="bio" th:name="bio" th:value="${usuario?.bio ?: 'Input'}" placeholder=" ">
+                                    <label>Bio</label>
+                                    <i>cancel</i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h5 class="margin-bottom">Segurança</h5>
+                        <div class="form-grid large-margin-bottom">
+                            <div class="col-12">
+                                <div class="password-field">
+                                    <div class="field label filled ext max">
+                                        <input type="password" th:id="senha" th:name="senha" th:value="${usuario?.senha ?: 'Input'}" placeholder=" ">
+                                        <label>Senha</label>
+                                        <i>cancel</i>
+                                    </div>
+                                    <button type="button" class="border small btn-inside">alterar senha</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="none large-margin"/>
+
+                        <div class="row cross-center justify-between">
+                            <button type="button" class="transparent error-text row cross-center gap">
+                                <i>delete</i> Deletar conta
+                            </button>
+                            <div class="row gap">
+                                <button type="button" class="transparent link">cancelar</button>
+                                <button type="submit" class="border">salvar alterações</button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>
