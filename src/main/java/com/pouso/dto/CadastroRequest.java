@@ -7,6 +7,8 @@ public class CadastroRequest {
     private String email;
     private String password;
     private String username;
+    private String telefone;
+    private String genero;
 
     public CadastroRequest() {
     }
@@ -49,5 +51,21 @@ public class CadastroRequest {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getTelefone() {
+    return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
+    public String getGenero() {
+        return genero;
+    }
+
+    public void setGenero(String genero) {
+        this.genero = genero;
     }
 }

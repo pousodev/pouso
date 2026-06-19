@@ -34,7 +34,9 @@ public class AuthService {
 
         personRepository.inserirUsuario(
             request.getCpf(),
-            request.getUsername()
+            request.getUsername(),
+            request.getTelefone(),
+            request.getGenero()
         );
 
         return new Person(
@@ -68,6 +70,17 @@ public class AuthService {
 
         if (isBlank(request.getUsername())) {
             throw new IllegalArgumentException("Username é obrigatório");
+        }
+
+        if (isBlank(request.getTelefone()) || request.getTelefone().length() != 11) {
+            throw new IllegalArgumentException("Telefone deve ter 11 dígitos");
+        }
+
+        if (isBlank(request.getGenero()) ||
+            (!request.getGenero().equals("M") &&
+            !request.getGenero().equals("F") &&
+            !request.getGenero().equals("O"))) {
+            throw new IllegalArgumentException("Gênero inválido");
         }
     }
 

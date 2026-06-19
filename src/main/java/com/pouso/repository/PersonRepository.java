@@ -52,13 +52,15 @@ public class PersonRepository {
 
     public void inserirUsuario(
         String cpf,
-        String username
+        String username,
+        String telefone,
+        String genero
     ) {
         String sql = """
-                INSERT INTO usuario (cpf, username)
-                VALUES (?, ?)
+                INSERT INTO usuario (cpf, username, telefone, genero)
+                VALUES (?, ?, ?, ?::genero_enum)
                 """;
 
-        jdbc.update(sql, cpf, username);
+        jdbc.update(sql, cpf, username, telefone, genero);
     }
 }
