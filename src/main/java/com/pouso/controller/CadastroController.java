@@ -3,10 +3,13 @@ package com.pouso.controller;
 import com.pouso.dto.CadastroRequest;
 import com.pouso.model.Person;
 import com.pouso.service.AuthService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+@Controller
 @RequestMapping("/cadastro")
 public class CadastroController {
 
@@ -16,8 +19,26 @@ public class CadastroController {
         this.authService = authService;
     }
 
-    @PostMapping
-    public ResponseEntity<?> cadastrar(@RequestBody CadastroRequest request) {
+    @GetMapping
+    public String cadastroScreen() {
+        return "cadastro";
+    }
+
+    @PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public String cadastrarFormulario(CadastroRequest request, Model model) {
+        try {
+            authService.cadastrar(request);
+            model.addAttribute("success", "Usuário cadastrado com sucesso!");
+            return "cadastro";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
+            return "cadastro";
+        }
+    }
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<?> cadastrarJson(@RequestBody CadastroRequest request) {
         try {
             Person person = authService.cadastrar(request);
 
