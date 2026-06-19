@@ -1,0 +1,4 @@
+INSERT INTO pet (nome, cpf_dono, bio, sexo, tipo_pet, data_nasc, data_cadastro, porte, is_permanente, is_castrado, adm_aprovou) VALUES
+('Maddxx', '22222222222', 'Um golden retriever amigável.', 'M', (SELECT id FROM tipo_pet WHERE nome = 'Golden Retriever'), '2022-01-15', '2024-05-10', 'G', false, true, '11111111111'),
+('Beddlldda', '33333333333', 'Uma bulldog calma e dócil.', 'F', (SELECT id FROM tipo_pet WHERE nome = 'Bulldog'), '2023-03-20', '2024-05-12', 'M', false, true, '11111111111'),
+('Rexddd', '22222222222', 'Um vira-lata brincalhão.', 'M', (SELECT id FROM tipo_pet WHERE nome = 'Cachorro'), '2021-07-01', '2024-05-15', 'M', false, true, NULL);

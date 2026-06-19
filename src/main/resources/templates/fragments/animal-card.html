@@ -1,0 +1,41 @@
+<div th:fragment="card(animal)"
+     class="card">
+
+    <div class="card-left">
+
+        <img class="foto"
+             th:src="${animal.imagem}"
+             alt="Animal">
+
+        <div class="info">
+
+            <div>
+
+                <div class="nome"
+                     th:text="${animal.getNome()}">
+                </div>
+
+                <div class="tags">
+
+                    <div th:replace="~{fragments/chip :: chip(texto=${animal.getRaca()})}"></div>
+
+                    <div th:replace="~{fragments/chip :: chip(texto=${animal.getIdade()})}"></div>
+
+                    <div th:replace="~{fragments/chip :: chip(texto=${animal.getPorte()})}"></div>
+
+                </div>
+
+            </div>
+
+            <button class="btn-detalhes">
+                ⋯ Ver detalhes
+            </button>
+
+        </div>
+
+    </div>
+
+    <div th:insert="~{fragments/status-badge :: status(tipo=${animal.getStatus()})}">
+    </div>
+
+</div>

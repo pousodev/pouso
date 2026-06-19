@@ -1,0 +1,11 @@
+<div th:fragment="status(tipo)"
+     class="status"
+     th:classappend="${tipo == 'APROVADO'} ? ' aprovado' : ' recusado'">
+
+    <span class="icone">✦</span>
+
+    <span th:text="${tipo == 'APROVADO'} ?
+          'Aprovado' : 'Recusado'">
+    </span>
+
+</div>

@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f9f9f9;
+}
+
+h1 {
+    text-align: center;
+    color: #1D1B20;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px; /* Espaço entre os cards */
+    padding: 20px;
+}
+
+.card {
+    width: 80%;
+    margin: 0 auto; /* Centraliza o card na tela */
+    background: #E8DEF8;
+    border-radius: 12px; /* Cantos arredondados */
+    padding: 5px 24px;
+    display: flex;
+    justify-content: space-between; /* Empurra o status para a direita */
+    align-items: flex-end;
+}
+
+.card-left {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.foto {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 16px;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.nome {
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 28px;
+    color: #1D1B20;
+}
+
+.tags {
+    display: flex; /* Coloca os chips lado a lado */
+    gap: 8px;
+}
+
+.chip{
+    background: #F7F2FA;
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #1D1B20;
+    display: flex;
+    align-items: center;
+    height: 32px;
+}
+
+.btn-detalhes {
+    /* Estilo do botão "Ver detalhes" do Figma */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 16px;
+    gap: 8px;
+    height: 40px;
+    background: #FFFFFF;
+    border: 1px solid #CAC4D0;
+    border-radius: 100px;
+    color: #49454F;
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 0.1px;
+    cursor: pointer;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.btn-acao {
+    width:140px;
+    height:42px;
+    border-radius:100px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    color:white;
+    font-weight:500;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.aprovar{
+    background:#4B662C;
+}
+
+.recusar{
+    background:#BA1A1A;
+}

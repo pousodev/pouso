@@ -1,0 +1,46 @@
+<div th:fragment="card(animal)" class="card">
+
+    <div class="card-left">
+
+        <img class="foto" th:src="${animal.imagem}" alt="Animal">
+
+        <div class="info">
+
+            <div>
+
+                <div class="nome" th:text="${animal.getNome()}">
+                </div>
+
+                <div class="tags">
+
+                    <div th:replace="~{fragments/chip :: chip(texto=${animal.getRaca()})}"></div>
+
+                    <div th:replace="~{fragments/chip :: chip(texto=${animal.getIdade()})}"></div>
+
+                    <div th:replace="~{fragments/chip :: chip(texto=${animal.getPorte()})}"></div>
+
+                </div>
+
+            </div>
+
+            <button class="btn-detalhes">
+                ⋯ Ver detalhes
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="action-buttons">
+        <form th:action="@{/moderador/solicitacoes/recusar}" method="post">
+            <input type="hidden" name="petNome" th:value="${animal.nome}" />
+            <input type="hidden" name="petDono" th:value="${animal.cpfDono}" />
+            <button type="submit" class="btn-acao recusar">Recusar</button>
+        </form>
+        <form th:action="@{/moderador/solicitacoes/aprovar}" method="post">
+            <input type="hidden" name="petNome" th:value="${animal.nome}" />
+            <input type="hidden" name="petDono" th:value="${animal.cpfDono}" />
+            <button type="submit" class="btn-acao aprovar">Aceitar</button>
+        </form>
+    </div>
+</div>
