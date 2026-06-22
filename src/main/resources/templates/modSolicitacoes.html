@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitações de Moderação</title>
+    <link rel="stylesheet" th:href="@{/css/solicitacoes.css}">
+</head>
+<body>
+
+<h1>Solicitações de Moderação</h1>
+
+<div class="container">
+    <th:block th:each="animal : ${animais}">
+        <div th:replace="~{fragments/solicitacao-card :: card(animal=${animal})}"></div>
+    </th:block>
+</div>
+
+</body>
+</html>

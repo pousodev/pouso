@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Aprovações/Reprovações</title>
+    <link rel="stylesheet" th:href="@{/css/historico.css}">
+</head>
+<body>
+
+<h1>Histórico de Aprovações/Reprovações</h1>
+
+<div class="container">
+    <!-- Itera sobre a lista de animais e usa o fragmento do card -->
+    <div th:each="animal : ${animais}">
+        <div th:replace="~{fragments/animal-card :: card(animal=${animal})}"></div>
+    </div>
+</div>
+
+</body>
+</html>
