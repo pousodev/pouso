@@ -11,7 +11,7 @@ spring:
     cache: false
 
   flyway:
-    clean-disabled: false
+    clean-disabled: true
     baseline-on-migrate: true
 
 logging:
