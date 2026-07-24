@@ -1,25 +1,22 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{default}"> <head>
-    <title>Início</title>
-</head>
-<body>
+<html
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{default}"
+>
+    <head>
+        <title>Início</title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <article class="border center-align padding extra">
+                <i class="extra large primary-text">rocket_launch</i>
 
-    <div layout:fragment="content">
-        
-        <article class="border center-align padding extra">
-            
-            <i class="extra large primary-text">rocket_launch</i>
-            
-            <div class="space"></div>
-            
-            <h4>Tá bombando!</h4>
-            <p>Deu tudo certo. Bó codar!</p>
-            
-        </article>
+                <div class="space"></div>
 
-    </div>
-
-</body>
+                <h4>Tá bombando!</h4>
+                <p>Deu tudo certo. Bó codar!</p>
+            </article>
+        </div>
+    </body>
 </html>

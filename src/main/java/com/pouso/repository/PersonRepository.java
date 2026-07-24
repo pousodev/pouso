@@ -14,24 +14,81 @@ public class PersonRepository {
         this.jdbc = jdbc;
     }
 
-    public Person buscarPorEmail(String email) {
+    public boolean emailExiste(String email) {
         String sql = """
-                SELECT cpf, senha
+                SELECT COUNT(*)
                 FROM pessoa
                 WHERE email = ?
-            """;
+                """;
 
-        List<Person> Persons = jdbc.query(
+        Integer count = jdbc.queryForObject(sql, Integer.class, email);
+
+        return count != null && count > 0;
+    }
+
+    public boolean cpfExiste(String cpf) {
+        String sql = """
+                SELECT COUNT(*)
+                FROM pessoa
+                WHERE cpf = ?
+                """;
+
+        Integer count = jdbc.queryForObject(sql, Integer.class, cpf);
+
+        return count != null && count > 0;
+    }
+
+    public void inserirPessoa(
+        String cpf,
+        String nome,
+        String email,
+        String senha
+    ) {
+        String sql = """
+                INSERT INTO pessoa (cpf, nome, email, senha)
+                VALUES (?, ?, ?, ?)
+                """;
+
+        jdbc.update(sql, cpf, nome, email, senha);
+    }
+
+    public void inserirUsuario(
+        String cpf,
+        String username,
+        String telefone,
+        String genero
+    ) {
+        String sql = """
+                INSERT INTO usuario (cpf, username, telefone, genero)
+                VALUES (?, ?, ?, ?::genero_enum)
+                """;
+
+        jdbc.update(sql, cpf, username, telefone, genero);
+    }
+
+    public Person buscarPorEmail(String email) {
+        String sql = """
+                SELECT cpf, nome, email, senha
+                FROM pessoa
+                WHERE email = ?
+                """;
+
+        List<Person> pessoas = jdbc.query(
             sql,
             (rs, rowNum) ->
-                new Person(rs.getString("cpf"), rs.getString("senha")),
+                new Person(
+                    rs.getString("cpf"),
+                    rs.getString("nome"),
+                    rs.getString("email"),
+                    rs.getString("senha")
+                ),
             email
         );
 
-        if (Persons.isEmpty()) {
+        if (pessoas.isEmpty()) {
             return null;
         }
 
-        return Persons.get(0);
+        return pessoas.get(0);
     }
 }

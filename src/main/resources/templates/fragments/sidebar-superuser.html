@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <th:block th:fragment="sidebar">
+        <nav id="sidebar" class="left max l surface-container">
+
+            <header>
+                <button class="extra circle transparent sidebar-toggle" onclick="toggleSidebar()">
+                    <i id="sidebar-toggle-icon">menu_open</i>
+                </button>
+                <div class="field prefix fill suffix round min sidebar-search-field">
+                    <i>search</i>
+                    <input id="search-input"
+                           type="text"
+                           th:value="${param.q != null ? param.q[0] : ''}">
+                    <output>Busque por username</output>
+                    <i class="suffix" id="clear-search"
+                       th:style="${param.q != null && !#strings.isEmpty(param.q[0])} ? '' : 'display:none'">close</i>
+                </div>
+                <button class="extend square round" id="sidebar-search-button" type="button">
+                    <i>search</i>
+                    <span>Buscar</span>
+                </button>
+            </header>
+            <div class="max"></div>
+            <div>
+                <a th:href="@{/sudo/users}">
+                    <i>group</i>
+                    <span>Usuários</span>
+                </a>
+
+                <a th:href="@{/sudo/pets}">
+                    <i>pets</i>
+                    <span>Pets</span>
+                </a>
+            </div>
+            <div class="max"></div>
+        </nav>
+    </th:block>
+</html>

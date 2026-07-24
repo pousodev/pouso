@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Pouso</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/beercss@4.0.21/dist/cdn/beer.min.css" rel="stylesheet">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/beercss@4.0.21/dist/cdn/beer.min.js"></script>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const icon = document.getElementById('sidebar-toggle-icon');
+            if (!sidebar) return;
+
+            sidebar.classList.toggle('max');
+            if (icon) icon.textContent = sidebar.classList.contains('max') ? 'menu_open' : 'menu';
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            ui('theme', '#6750A4');
+            const mode = window.matchMedia('(prefers-color-scheme: dark)');
+            ui('mode', mode.matches ? 'dark' : 'light');
+        });
+    </script>
+    <style>
+        #sidebar .sidebar-search-field {
+            min-width: 0;
+            max-width: 13rem;
+        }
+
+        #sidebar:not(.max) .sidebar-search-field {
+            width: 3rem;
+            min-width: 3rem;
+            padding-inline: 0;
+            justify-content: center;
+        }
+
+        #sidebar:not(.max) .sidebar-search-field input,
+        #sidebar:not(.max) .sidebar-search-field output,
+        #sidebar:not(.max) .sidebar-search-field .suffix {
+            display: none !important;
+        }
+    </style>
+</head>
+<body class="primary surface-container">
+    <nav th:replace="~{fragments/header-superuser :: header}" class="top"></nav>
+    <th:block th:replace="~{fragments/sidebar-superuser :: sidebar}"></th:block>
+
+    <main class="left-round padding surface">
+        <div layout:fragment="content"></div>
+    </main>
+
+</body>
+</html>

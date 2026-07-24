@@ -1,0 +1,309 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Pouso - Cadastrar pet</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/beercss@4.0.21/dist/cdn/beer.min.css"
+            rel="stylesheet"
+        />
+        <script
+            type="module"
+            src="https://cdn.jsdelivr.net/npm/beercss@4.0.21/dist/cdn/beer.min.js"
+        ></script>
+        <script
+            type="module"
+            src="https://cdn.jsdelivr.net/npm/material-dynamic-colors@1.1.4/dist/cdn/material-dynamic-colors.min.js"
+        ></script>
+        <style>
+            body {
+                background-color: #f1ecf9;
+            }
+            .app-shell {
+                min-height: 100vh;
+                align-items: flex-start;
+                padding: 2rem;
+                gap: 1.5rem;
+            }
+            .sidebar {
+                background-color: #ffffff;
+                border-radius: 1.5rem;
+                padding: 2rem 1rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                height: 100%;
+            }
+            .sidebar .brand {
+                font-weight: bold;
+                color: #4a2e8a;
+                margin-bottom: 2rem;
+                text-align: center;
+            }
+            .sidebar .nav-icon {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 2.75rem;
+                height: 2.75rem;
+                margin: 0.75rem 0;
+                color: #6b4fbb;
+                border-radius: 1rem;
+            }
+            .sidebar .nav-icon.active {
+                background-color: #e3d9fb;
+            }
+            .content-card {
+                background-color: #ffffff;
+                border-radius: 1.5rem;
+                padding: 2rem;
+            }
+            .pet-photo-box {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+                padding-right: 1.5rem;
+            }
+            .pet-avatar {
+                width: 140px;
+                height: 140px;
+                border-radius: 50%;
+                background-color: #e3d9fb;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+            }
+            .pet-avatar img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+            .pet-avatar i {
+                font-size: 3rem;
+                color: #6b4fbb;
+            }
+            .form-title {
+                color: #4a2e8a;
+                margin-bottom: 1rem;
+            }
+            .field label {
+                color: #6b4fbb;
+                font-size: 0.95rem !important;
+            }
+            .field.border {
+                border-radius: 0.9rem;
+            }
+            .back-link {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.5rem 1rem;
+                margin-bottom: 1.5rem;
+                border-radius: 1rem;
+                color: #4a2e8a;
+                text-decoration: none;
+            }
+            .back-link:hover {
+                background-color: #f1ecf9;
+            }
+        </style>
+    </head>
+    <body>
+        <main class="grid app-shell no-space">
+            <div class="s2 m1 l1 sidebar">
+                <div class="brand">🐾 Pouso</div>
+                <a href="#" class="nav-icon">
+                    <i>search</i>
+                </a>
+                <a th:href="@{/doador/meus-pets}" class="nav-icon active">
+                    <i>pets</i>
+                </a>
+                <a th:href="@{/doador/minhas-adocoes}" class="nav-icon">
+                    <i>home</i>
+                </a>
+            </div>
+
+            <section class="s10 m11 l11">
+                <div class="content-card">
+                    <a th:href="@{/doador/meus-pets}" class="back-link">
+                        <i>arrow_back</i>
+                        <h6 style="margin: 0">Cadastro pet</h6>
+                    </a>
+
+                    <div th:if="${error}" class="error-message">
+                        <p
+                            th:text="${error}"
+                            style="color: #b00020"
+                        ></p>
+                    </div>
+                    <div th:if="${success}" class="success-message">
+                        <p
+                            th:text="${success}"
+                            style="color: #1b8a3a"
+                        ></p>
+                    </div>
+
+                    <form
+                        th:action="@{/pets/cadastrar}"
+                        th:object="${petForm}"
+                        method="post"
+                        class="grid"
+                    >
+                        <div class="s12 m3 l3 pet-photo-box">
+                            <div class="pet-avatar" id="fotoAvatar">
+                                <i>pets</i>
+                            </div>
+
+                            <label class="border small-round">
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onchange="previewFoto(event)"
+                                    hidden
+                                />
+                                <i>upload</i>
+                                <span>Foto de perfil</span>
+                            </label>
+                        </div>
+
+                        <div class="s12 m9 l9">
+                            <h6 class="form-title">Dados do pet</h6>
+
+                            <div class="field label border">
+                                <input
+                                    type="text"
+                                    th:field="*{nome}"
+                                    required
+                                />
+                                <label>Nome Completo</label>
+                            </div>
+
+                            <div class="grid">
+                                <div class="s12 m6 l6 field label border">
+                                    <input
+                                        type="text"
+                                        th:field="*{especie}"
+                                        required
+                                    />
+                                    <label>Espécie</label>
+                                </div>
+
+                                <div class="s12 m6 l6 field label border">
+                                    <input
+                                        type="date"
+                                        th:field="*{dataNascimento}"
+                                        required
+                                    />
+                                    <label>Data de nascimento</label>
+                                </div>
+                            </div>
+
+                            <div class="grid">
+                                <div class="s12 m6 l6 field label border">
+                                    <select th:field="*{sexo}" required>
+                                        <option value="" disabled>
+                                            Selecione
+                                        </option>
+                                        <option value="M">Macho</option>
+                                        <option value="F">Fêmea</option>
+                                    </select>
+                                    <label>Sexo</label>
+                                </div>
+
+                                <div class="s12 m6 l6 field label border">
+                                    <select th:field="*{porte}" required>
+                                        <option value="" disabled>
+                                            Selecione
+                                        </option>
+                                        <option value="P">Pequeno</option>
+                                        <option value="M">Médio</option>
+                                        <option value="G">Grande</option>
+                                    </select>
+                                    <label>Porte</label>
+                                </div>
+                            </div>
+
+                            <div class="grid">
+                                <div class="s12 m6 l6 field label border">
+                                    <select th:field="*{castrado}">
+                                        <option value="false">Não</option>
+                                        <option value="true">Sim</option>
+                                    </select>
+                                    <label>Castrado?</label>
+                                </div>
+
+                                <div class="s12 m6 l6 field label border">
+                                    <select th:field="*{usaMedicamento}">
+                                        <option value="false">Não</option>
+                                        <option value="true">Sim</option>
+                                    </select>
+                                    <label>Uso de medicamento?</label>
+                                </div>
+                            </div>
+
+                            <div class="grid">
+                                <div class="s12 m6 l6">
+                                    <div class="field label border textarea">
+                                        <textarea
+                                            rows="2"
+                                            th:field="*{condicoesEspeciais}"
+                                        ></textarea>
+                                        <label
+                                            >Condições especiais /
+                                            cuidados</label
+                                        >
+                                    </div>
+                                </div>
+
+                                <div class="s12 m6 l6">
+                                    <div class="field label border">
+                                        <input
+                                            type="text"
+                                            th:field="*{medicamentos}"
+                                        />
+                                        <label>Medicamento(s)</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="field label border textarea">
+                                <textarea th:field="*{bio}"></textarea>
+                                <label>Bio</label>
+                            </div>
+
+                            <div class="row right-align">
+                                <a
+                                    th:href="@{/doador/meus-pets}"
+                                    class="button border"
+                                    >cancelar</a
+                                >
+                                <button type="submit" class="button">
+                                    Enviar para validação
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+
+        <script>
+            function previewFoto(event) {
+                const file = event.target.files[0];
+                if (!file) {
+                    return;
+                }
+                const avatar = document.getElementById("fotoAvatar");
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    avatar.innerHTML =
+                        '<img src="' + e.target.result + '" alt="Foto do pet">';
+                };
+                reader.readAsDataURL(file);
+            }
+        </script>
+    </body>
+</html>

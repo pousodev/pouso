@@ -1,25 +1,36 @@
 package com.pouso.model;
+
 import java.time.LocalDate;
 
 public class Pet {
     private String nome;
     private String cpfDono;
-    
     private String bio;
-    private String sexo;          
-    private Integer tipoPet;      
-    private LocalDate dataNasc;    // DATE mapeado para o java.time 
+    private String sexo;
+    private Integer tipoPet;
+    private LocalDate dataNasc;    // DATE mapeado para o java.time
     private LocalDate dataCadastro;
-    private String porte;          
+    private String porte;
     private Boolean isPermanente;
     private Boolean isCastrado;
-    private String admAprovou;     
+    private String admAprovou;
     private String fotoPet;
-    public Pet(String nome, String cpfDono, String bio, String sexo, Integer tipoPet, 
-               LocalDate dataNasc, LocalDate dataCadastro, String porte, 
-               Boolean isPermanente, Boolean isCastrado, String admAprovou,String fotoPet) {
+
+    public Pet(
+        String nome, String cpfDono, String bio, String sexo, Integer tipoPet,
+        LocalDate dataNasc, LocalDate dataCadastro, String porte,
+        Boolean isCastrado
+    ) {
+        this(
+            nome, cpfDono, bio, sexo, tipoPet, dataNasc, dataCadastro, porte,
+            null, isCastrado, null, null
+        );
+    }
+
+    public Pet(String nome, String cpfDono, String bio, String sexo, Integer tipoPet,
+               LocalDate dataNasc, LocalDate dataCadastro, String porte,
+               Boolean isPermanente, Boolean isCastrado, String admAprovou, String fotoPet) {
         this.nome = nome;
-        this.fotoPet = fotoPet;
         this.cpfDono = cpfDono;
         this.bio = bio;
         this.sexo = sexo;
@@ -30,11 +41,12 @@ public class Pet {
         this.isPermanente = isPermanente;
         this.isCastrado = isCastrado;
         this.admAprovou = admAprovou;
-        
+        this.fotoPet = fotoPet;
     }
+
     public String getFotoPet() { return fotoPet; }
     public void setFotoPet(String fotoPet) { this.fotoPet = fotoPet; }
-    
+
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }
 

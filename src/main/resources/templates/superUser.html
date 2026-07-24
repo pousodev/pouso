@@ -1,0 +1,181 @@
+<!doctype html>
+<html
+    lang="pt-BR"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{superuser-default}"
+>
+    <head>
+        <title>Sudo</title>
+        <style>
+            .placeholder-img {
+                width: 80px;
+                height: 80px;
+                display: flex;
+                overflow: hidden;
+                flex-shrink: 0;
+            }
+            .placeholder-img img {
+                width: 80px;
+                height: 80px;
+                object-fit: cover;
+            }
+        </style>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <div>
+                <article class="primary-container round large-padding bottom-margin">
+                    <div class="row wrap">
+                        <i class="extra">admin_panel_settings</i>
+                        <div class="max">
+                            <h3 class="no-margin">Gerenciar Usuários</h3>
+                            <p class="no-margin opacity">Consulte perfis dos usuários.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <nav class="row wrap left-align bottom-margin surface-container-high round padding">
+                    <div class="row">
+                        <span class="middle-align">Ordenar:</span>
+                        <button th:class="'chip round ' + (${currentSortBy == 'nome' && currentSortDir == 'asc'} ? 'fill' : 'border')"
+                                id="sort-nome-asc"
+                                onclick="applyFilter('nome','asc')">
+                            <i>sort_by_alpha</i>
+                            <span>A-Z</span>
+                        </button>
+                        <button th:class="'chip round ' + (${currentSortBy == 'nome' && currentSortDir == 'desc'} ? 'fill' : 'border')"
+                                id="sort-nome-desc"
+                                onclick="applyFilter('nome','desc')">
+                            <i>sort_by_alpha</i>
+                            <span>Z-A</span>
+                        </button>
+                        <button th:class="'chip round ' + (${currentSortBy == 'data_registro' && currentSortDir == 'desc'} ? 'fill' : 'border')"
+                                id="sort-data-desc"
+                                onclick="applyFilter('data_registro','desc')">
+                            <i>schedule</i>
+                            <span>Mais recentes</span>
+                        </button>
+                        <button th:class="'chip round ' + (${currentSortBy == 'data_registro' && currentSortDir == 'asc'} ? 'fill' : 'border')"
+                                id="sort-data-asc"
+                                onclick="applyFilter('data_registro','asc')">
+                            <i>schedule</i>
+                            <span>Mais antigos</span>
+                        </button>
+                    </div>
+                    <div class="max"></div>
+                    <div class="row">
+                        <span class="middle-align">Por página:</span>
+                        <button th:class="'chip round ' + (${currentSize == 10} ? 'fill' : 'border')"
+                                id="size-10"
+                                onclick="applySize(10)">
+                            <span>10</span>
+                        </button>
+                        <button th:class="'chip round ' + (${currentSize == 20} ? 'fill' : 'border')"
+                                id="size-20"
+                                onclick="applySize(20)">
+                            <span>20</span>
+                        </button>
+                        <button th:class="'chip round ' + (${currentSize == 50} ? 'fill' : 'border')"
+                                id="size-50"
+                                onclick="applySize(50)">
+                            <span>50</span>
+                        </button>
+                    </div>
+                </nav>
+
+                <div class="surface round large-padding no-elevate" style="min-height: 60vh">
+                    <div th:if="${#lists.isEmpty(usuarios)}">
+                        <p>Nenhum usuário cadastrado no sistema.</p>
+                    </div>
+
+                    <article
+                        class="primary-container elevate border round padding bottom-margin"
+                        th:each="usuario : ${usuarios}"
+                    >
+                        <div class="grid">
+                            <div class="s1 round placeholder-img middle-align center-align surface-variant">
+                                <i th:if="${usuario.fotoPerfil == null}">person</i>
+                                <img th:if="${usuario.fotoPerfil != null}"
+                                     th:src="${usuario.fotoPerfil}"
+                                     alt="Foto"
+                                     class="round">
+                            </div>
+
+                            <div class="s3 left-align">
+                                <h6><strong th:text="${usuario.nome}">José</strong></h6>
+                            </div>
+
+                            <div class="s4 top-padding">
+                                <div><span th:text="${usuario.username}">@username</span></div>
+                                <div><span th:text="${usuario.email}">email@exemplo.com</span></div>
+                            </div>
+
+                            <div class="s2 right-align">
+                                <small th:if="${usuario.dataRegistro != null}"
+                                       th:text="'Registro: ' + ${#temporals.format(usuario.dataRegistro, 'dd/MM/yyyy')}">
+                                    Registro: 01/01/2026
+                                </small>
+                            </div>
+
+                            <div class="s2 middle-align right-align">
+                                <a th:href="@{/superuser/usuarios/{cpf}(cpf=${usuario.cpf})}"
+                                   class="button border round">
+                                    <i>more_horiz</i> Ver detalhes
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                    <nav class="row top-margin" th:if="${!page.content.empty || page.totalElements > 0}">
+                    <div class="left-align top-margin">
+                        <span th:if="${page.totalElements > 0}">
+                            Mostrando
+                            <strong th:text="${page.page * page.size + 1}">1</strong>
+                            -
+                            <strong
+                                th:text="${page.page * page.size + #lists.size(usuarios)}">10</strong>
+                            de
+                            <strong th:text="${page.totalElements}">0</strong>
+                            usuários
+                        </span>
+                    </div>
+                    <div class="max"></div>
+                    <div class="row">
+                        <button class="border round"
+                                th:classappend="${page.first ? 'transparent' : 'fill'}"
+                                th:disabled="${page.first}"
+                                onclick="goToPage(0)">
+                            <i>first_page</i>
+                        </button>
+                        <button class="border round"
+                                th:classappend="${page.first ? 'transparent' : 'fill'}"
+                                th:disabled="${page.first}"
+                                th:onclick="'goToPage(' + ${page.page - 1} + ')'">
+                            <i>chevron_left</i>
+                        </button>
+                        <span class="middle-align padding" th:if="${page.totalPages > 0}">
+                            Página <strong th:text="${page.page + 1}">1</strong>
+                            de <strong th:text="${page.totalPages}">1</strong>
+                        </span>
+                        <button class="border round"
+                                th:classappend="${page.last ? 'transparent' : 'fill'}"
+                                th:disabled="${page.last}"
+                                th:onclick="'goToPage(' + ${page.page + 1} + ')'">
+                            <i>chevron_right</i>
+                        </button>
+                        <button class="border round"
+                                th:classappend="${page.last ? 'transparent' : 'fill'}"
+                                th:disabled="${page.last}"
+                                th:onclick="'goToPage(' + ${page.totalPages - 1} + ')'">
+                            <i>last_page</i>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+
+            <script th:src="@{/js/superuser.js}"></script>
+        </div>
+    </body>
+</html>

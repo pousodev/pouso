@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <nav th:fragment="header" class="top surface-container">
+
+        <button class="extra circle transparent s sidebar-toggle" onclick="toggleSidebar()">
+            <i>menu</i>
+        </button>
+        <div class="row middle-align">
+            <img th:src="@{/img/pouso-icon.png}" style="width: 35px; margin-right: 0px;">
+            <h3 style="font-family: 'EB Garamond'; margin: 0px;">Pouso</h3>
+        </div>
+
+        <div class="max"></div>
+
+        <div class="row middle-align" style="padding-right: 10px;">
+            <span class="chip fill">SUPERUSER</span>
+            <a>
+                <i>notifications</i>
+            </a>
+            <button class="circle transparent">
+                <img class="responsive circle" src="https://www.w3schools.com/w3images/avatar2.png" alt="Avatar">
+            </button>
+        </div>
+
+    </nav>
+</body>
+</html>

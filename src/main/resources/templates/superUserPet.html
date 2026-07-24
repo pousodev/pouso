@@ -1,0 +1,178 @@
+<!doctype html>
+<html
+    lang="pt-BR"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{superuser-default}"
+>
+    <head>
+        <title>Sudo</title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <div>
+                <article class="primary-container round large-padding bottom-margin">
+                    <div class="row wrap">
+                        <i class="extra">pets</i>
+                        <div class="max">
+                            <h3 class="no-margin">Pets por Tutor</h3>
+                            <p class="no-margin opacity">Acompanhe os pets cadastrados por responsável.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <nav class="row wrap left-align bottom-margin surface-container-high round padding">
+                    <div class="row">
+                        <span class="middle-align">Ordenar:</span>
+                        <button th:class="'chip round ' + (${currentSortBy == 'nome' && currentSortDir == 'asc'} ? 'fill' : 'border')"
+                                id="sort-nome-asc"
+                                onclick="applyFilter('nome','asc')">
+                            <i>sort_by_alpha</i>
+                            <span>A-Z</span>
+                        </button>
+                        <button th:class="'chip round ' + (${currentSortBy == 'nome' && currentSortDir == 'desc'} ? 'fill' : 'border')"
+                                id="sort-nome-desc"
+                                onclick="applyFilter('nome','desc')">
+                            <i>sort_by_alpha</i>
+                            <span>Z-A</span>
+                        </button>
+                        <button th:class="'chip round ' + (${currentSortBy == 'data_registro' && currentSortDir == 'desc'} ? 'fill' : 'border')"
+                                id="sort-data-desc"
+                                onclick="applyFilter('data_registro','desc')">
+                            <i>schedule</i>
+                            <span>Mais recentes</span>
+                        </button>
+                        <button th:class="'chip round ' + (${currentSortBy == 'data_registro' && currentSortDir == 'asc'} ? 'fill' : 'border')"
+                                id="sort-data-asc"
+                                onclick="applyFilter('data_registro','asc')">
+                            <i>schedule</i>
+                            <span>Mais antigos</span>
+                        </button>
+                        <button th:class="'chip round ' + (${currentSortBy == 'pet_count' && currentSortDir == 'desc'} ? 'fill' : 'border')"
+                                id="sort-count-desc"
+                                onclick="applyFilter('pet_count','desc')">
+                            <i>pets</i>
+                            <span>Mais pets</span>
+                        </button>
+                        <button th:class="'chip round ' + (${currentSortBy == 'pet_count' && currentSortDir == 'asc'} ? 'fill' : 'border')"
+                                id="sort-count-asc"
+                                onclick="applyFilter('pet_count','asc')">
+                            <i>pets</i>
+                            <span>Menos pets</span>
+                        </button>
+                    </div>
+                    <div class="max"></div>
+                    <div class="row">
+                        <span class="middle-align">Por página:</span>
+                        <button th:class="'chip round ' + (${currentSize == 10} ? 'fill' : 'border')"
+                                id="size-10"
+                                onclick="applySize(10)">
+                            <span>10</span>
+                        </button>
+                        <button th:class="'chip round ' + (${currentSize == 20} ? 'fill' : 'border')"
+                                id="size-20"
+                                onclick="applySize(20)">
+                            <span>20</span>
+                        </button>
+                        <button th:class="'chip round ' + (${currentSize == 50} ? 'fill' : 'border')"
+                                id="size-50"
+                                onclick="applySize(50)">
+                            <span>50</span>
+                        </button>
+                    </div>
+                </nav>
+
+                <div class="surface round large-padding no-elevate" style="min-height: 60vh">
+                    <div th:if="${#lists.isEmpty(proprietarios)}">
+                        <p>Nenhum pet cadastrado no sistema.</p>
+                    </div>
+
+                    <details
+                        th:each="dono : ${proprietarios}"
+                        th:open="${donoStat.count == 1}"
+                        class="primary-container border round bottom-margin"
+                    >
+                        <summary class="row padding no-margin round">
+                            <i class="large">account_circle</i>
+                            <div class="max">
+                                <h6 th:text="${dono.nome}" class="no-margin">Tutor</h6>
+                                <p class="no-margin">
+                                    <span th:text="${dono.petCount}">0</span>
+                                    <span th:text="${dono.petCount == 1 ? ' pet cadastrado' : ' pets cadastrados'}">pets</span>
+                                    <span> no sistema</span>
+                                </p>
+                            </div>
+                            <i>arrow_drop_down</i>
+                        </summary>
+
+                        <div class="padding">
+                            <div class="grid small-space">
+                                <article
+                                    class="s12 m6 round padding secondary-container"
+                                    th:each="pet : ${dono.pets}"
+                                >
+                                    <div class="row">
+                                        <i class="large text-secondary">pets</i>
+                                        <div class="max">
+                                            <strong th:text="${pet.nome}">Nome</strong>
+                                            <div class="small opacity" th:text="${pet.tipoPetNome}">Tipo</div>
+                                        </div>
+                                        <button class="circle transparent small"><i class="small">arrow_forward</i></button>
+                                    </div>
+                                </article>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+
+                <nav class="row top-margin" th:if="${!page.content.empty || page.totalElements > 0}">
+                    <div class="left-align top-margin">
+                        <span th:if="${page.totalElements > 0}">
+                            Mostrando
+                            <strong th:text="${page.page * page.size + 1}">1</strong>
+                            -
+                            <strong
+                                th:text="${page.page * page.size + #lists.size(proprietarios)}">10</strong>
+                            de
+                            <strong th:text="${page.totalElements}">0</strong>
+                            tutores
+                        </span>
+                    </div>
+                    <div class="max"></div>
+                    <div class="row">
+                        <button class="border round"
+                                th:classappend="${page.first ? 'transparent' : 'fill'}"
+                                th:disabled="${page.first}"
+                                onclick="goToPage(0)">
+                            <i>first_page</i>
+                        </button>
+                        <button class="border round"
+                                th:classappend="${page.first ? 'transparent' : 'fill'}"
+                                th:disabled="${page.first}"
+                                th:onclick="'goToPage(' + ${page.page - 1} + ')'">
+                            <i>chevron_left</i>
+                        </button>
+                        <span class="middle-align padding" th:if="${page.totalPages > 0}">
+                            Página <strong th:text="${page.page + 1}">1</strong>
+                            de <strong th:text="${page.totalPages}">1</strong>
+                        </span>
+                        <button class="border round"
+                                th:classappend="${page.last ? 'transparent' : 'fill'}"
+                                th:disabled="${page.last}"
+                                th:onclick="'goToPage(' + ${page.page + 1} + ')'">
+                            <i>chevron_right</i>
+                        </button>
+                        <button class="border round"
+                                th:classappend="${page.last ? 'transparent' : 'fill'}"
+                                th:disabled="${page.last}"
+                                th:onclick="'goToPage(' + ${page.totalPages - 1} + ')'">
+                            <i>last_page</i>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+
+            <script th:src="@{/js/superuser.js}"></script>
+        </div>
+    </body>
+</html>
