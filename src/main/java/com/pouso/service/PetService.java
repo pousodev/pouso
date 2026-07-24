@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.stereotype.Service;
 
 import com.pouso.model.Pet;
 import com.pouso.model.PetCadastroForm;
@@ -15,7 +14,6 @@ import com.pouso.repository.TipoPetRepository;
 import com.pouso.dto.PetOwnerListDTO;
 import com.pouso.dto.PetOwnerListDTO.OwnerItem;
 import com.pouso.dto.PetOwnerListDTO.PetItem;
-import com.pouso.repository.PetRepository;
 
 import java.util.List;
 import java.util.Map;

@@ -1,11 +1,9 @@
 -- =========================================================================
--- 1. TABELA: tipo_pet (Categorias base para os pets)
+-- 1. TABELA: tipo_pet (Categorias extras para os pets)
 -- =========================================================================
 INSERT INTO tipo_pet (nome) VALUES
-('Cachorro'), -- 1
-('Gato'),     -- 2
-('Roedor'),   -- 3
-('Ave');      -- 4
+('Roedor'),
+('Ave');
 
 -- =========================================================================
 -- 2. TABELA: pet
@@ -19,7 +17,7 @@ INSERT INTO pet (nome, cpf_dono, bio, sexo, tipo_pet, data_nasc, data_cadastro, 
 -- Usuário '44444444444' (Maria Souza - Veterinária) possui 3 pets, alguns temporários para adoção
 ('Bidu', '44444444444', 'Cachorro resgatado, muito dócil', 'M', 1, '2021-02-14', '2023-02-10', 'M', false, false, '22222222222'),
 ('Nina', '44444444444', 'Gatinha assustada, precisa de paciência', 'F', 2, '2022-08-05', '2023-03-01', 'P', false, true, '22222222222'),
-('Piu', '44444444444', 'Calopsita cantora (Posse definitiva)', 'M', 4, '2022-01-10', '2023-04-12', 'P', true, false, '11111111111'),
+('Piu', '44444444444', 'Calopsita cantora (Posse definitiva)', 'M', 7, '2022-01-10', '2023-04-12', 'P', true, false, '11111111111'),
 
 -- Usuário '10000000001' (Lucas Almeida) possui 1 pet para adoção
 ('Thor', '10000000001', 'Pitbull mansinho, adora crianças', 'M', 1, '2018-11-20', '2023-05-20', 'G', false, true, '11111111111'),
@@ -54,13 +52,13 @@ INSERT INTO pet (nome, cpf_dono, bio, sexo, tipo_pet, data_nasc, data_cadastro, 
 ('Zeus', '10000000078', 'Pastor Alemão protetor da casa', 'M', 1, '2018-11-30', '2023-10-06', 'G', true, true, '22222222222'),
 
 -- Usuário '10000000089' (Seu Jorge)
-('Chico', '10000000089', 'Papagaio falador que adora música', 'M', 4, '2015-04-12', '2023-10-07', 'P', true, false, '11111111111'),
+('Chico', '10000000089', 'Papagaio falador que adora música', 'M', 7, '2015-04-12', '2023-10-07', 'P', true, false, '11111111111'),
 
 -- Usuário '10000000028' (Caroline Vieira - Colecionadora de plantas)
 ('Amora', '10000000028', 'Gosta de dormir nos vasos de planta', 'F', 2, '2021-08-22', '2023-10-08', 'P', true, true, '22222222222'),
 
 -- Usuário '10000000045' (Murilo Campos)
-('Paçoca', '10000000045', 'Porquinho da índia muito agitado', 'M', 3, '2023-05-10', '2023-10-09', 'P', true, false, '11111111111'),
+('Paçoca', '10000000045', 'Porquinho da índia muito agitado', 'M', 6, '2023-05-10', '2023-10-09', 'P', true, false, '11111111111'),
 
 -- Usuário '10000000067' (Gisele Bundchen)
 ('Lulu', '10000000067', 'Lulu da Pomerânia, super vaidosa', 'F', 1, '2020-09-09', '2023-10-10', 'P', true, true, '22222222222'),
@@ -69,7 +67,7 @@ INSERT INTO pet (nome, cpf_dono, bio, sexo, tipo_pet, data_nasc, data_cadastro, 
 ('Fred', '55555555555', 'Cachorro brincalhão aguardando um lar definitivo', 'M', 1, '2022-12-01', '2023-10-11', 'M', false, true, '11111111111'),
 
 -- Usuário '10000000019' (Bruno Cavalcanti)
-('Pipoca', '10000000019', 'Hamster anão russo, adora a rodinha', 'F', 3, '2023-08-15', '2023-10-12', 'P', true, false, '22222222222'),
+('Pipoca', '10000000019', 'Hamster anão russo, adora a rodinha', 'F', 6, '2023-08-15', '2023-10-12', 'P', true, false, '22222222222'),
 
 -- Usuário '10000000052' (Alexandre Frota)
 ('Belinha', '10000000052', 'Poodle toy bem companheira', 'F', 1, '2017-03-03', '2023-10-13', 'P', true, true, '11111111111'),
@@ -84,8 +82,8 @@ INSERT INTO pet (nome, cpf_dono, bio, sexo, tipo_pet, data_nasc, data_cadastro, 
 ('Juma', '10000000024', 'Gata de rua resgatada que virou onça mansa', 'F', 2, '2022-02-18', '2023-10-16', 'M', true, true, '22222222222'),
 
 -- Usuário '10000000084' (Thiaguinho Silva) - Possui duas aves irmãs
-('Tico', '10000000084', 'Canário belga cantor', 'M', 4, '2022-10-01', '2023-10-17', 'P', true, false, '11111111111'),
-('Teco', '10000000084', 'Canário belga, irmão do Tico', 'M', 4, '2022-10-01', '2023-10-17', 'P', true, false, '11111111111'),
+('Tico', '10000000084', 'Canário belga cantor', 'M', 7, '2022-10-01', '2023-10-17', 'P', true, false, '11111111111'),
+('Teco', '10000000084', 'Canário belga, irmão do Tico', 'M', 7, '2022-10-01', '2023-10-17', 'P', true, false, '11111111111'),
 
 -- Usuário '10000000011' (Daniel Carvalho) - Tem um pet permanente e um para adoção
 ('Bela', '10000000011', 'Labradora muito inteligente e leal', 'F', 1, '2020-05-20', '2023-10-18', 'G', true, true, '22222222222'),
