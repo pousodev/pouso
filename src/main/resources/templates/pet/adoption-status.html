@@ -1,0 +1,83 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/app}">
+<head>
+    <title>Status da adoção</title>
+    <style>
+        .status-pet-photo { width: 100%; max-height: 360px; object-fit: cover; }
+        .status-pet-placeholder { min-height: 320px; }
+        .status-progress-green { accent-color: #2e7d32; }
+        .status-progress-green::-webkit-progress-value { background: #2e7d32; }
+        .status-progress-green::-moz-progress-bar { background: #2e7d32; }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <header class="row wrap middle-align margin-bottom">
+        <a th:href="@{/adocoes}" class="button circle transparent" aria-label="Voltar"><i>arrow_back</i></a>
+        <div class="max">
+            <h4 class="no-margin">Status da adoção</h4>
+            <p class="no-margin opacity">Acompanhe o pet adotado por outra pessoa.</p>
+        </div>
+        <span class="chip" th:classappend="${adoption.permanent} ? ' green white-text' : ' border'" th:text="${adoption.typeDescription}">Tipo</span>
+    </header>
+
+    <div class="grid large-space">
+        <div class="s12 l4">
+            <article class="surface-container-low round large-padding">
+                <img th:if="${adoption.petPhoto != null && !adoption.petPhoto.isBlank()}" th:src="${adoption.petPhoto}" class="status-pet-photo round" alt="Foto do pet">
+                <div th:unless="${adoption.petPhoto != null && !adoption.petPhoto.isBlank()}" class="status-pet-placeholder primary-container round center-align middle-align"><i class="extra">pets</i></div>
+
+                <h4 th:text="${adoption.petName}">Pet</h4>
+                <div class="row wrap small-space margin-top">
+                    <span class="chip border" th:text="${adoption.speciesName}">Especie</span>
+                    <span class="chip border" th:text="${adoption.breedName}">Raca</span>
+                    <span class="chip border" th:text="${adoption.ageDescription}">Idade</span>
+                    <span class="chip border" th:text="${adoption.sizeDescription}">Porte</span>
+                </div>
+
+                <div class="divider margin"></div>
+                <div class="row middle-align">
+                    <i>check</i>
+                    <div>
+                        <p class="small-text no-margin opacity">Status</p>
+                        <h6 class="no-margin" th:text="${adoption.statusDescription}">Adotado</h6>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <div class="s12 l8">
+            <article class="primary-container round large-padding center-align">
+                <div class="row center-align middle-align">
+                    <i>account_circle</i>
+                    <span th:text="'Adotante: ' + ${adoption.adopterName}">Adotante</span>
+                </div>
+
+                <div class="grid margin-top">
+                    <div class="s12 m6">
+                        <p class="small-text no-margin opacity">Início</p>
+                        <h6 th:text="${adoption.formattedStartDate}">DD/MM/AAAA</h6>
+                    </div>
+                    <div class="s12 m6" th:unless="${adoption.permanent}">
+                        <p class="small-text no-margin opacity">Fim</p>
+                        <h6 th:text="${adoption.formattedEndDate}">DD/MM/AAAA</h6>
+                    </div>
+                </div>
+
+                <div class="margin">
+                    <progress class="max" th:classappend="${adoption.permanent} ? ' status-progress-green'" th:value="${adoption.statusProgress}" max="100"></progress>
+                    <h6 th:if="${adoption.permanent}">Adoção permanente concluída</h6>
+                    <h6 th:unless="${adoption.permanent}" th:text="${adoption.daysUntilEndDescription}">Faltam X dias para devolucao</h6>
+                </div>
+
+                <div class="row center-align wrap small-space">
+                    <span th:if="${adoption.hasReturnRequest}" class="chip error"><i>assignment_return</i><span>Solicitação de devolução</span></span>
+                </div>
+            </article>
+        </div>
+    </div>
+</div>
+</body>
+</html>

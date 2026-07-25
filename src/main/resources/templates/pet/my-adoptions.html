@@ -7,6 +7,7 @@
     <style>
         .adoption-photo { width: 112px; height: 112px; object-fit: cover; }
         .adoption-placeholder { width: 112px; height: 112px; }
+        .adoption-avatar { width: 96px; height: 96px; object-fit: cover; }
     </style>
 </head>
 <body>
@@ -19,19 +20,70 @@
         <a th:href="@{/pets}" class="button border round"><i>pets</i><span>Ver pets</span></a>
     </div>
 
+    <article class="green white-text round large-padding elevate margin-bottom" th:if="${success}"><h5 class="no-margin" th:text="${success}">Sucesso.</h5></article>
+    <article class="error-container round padding margin-bottom" th:if="${error}"><p class="no-margin" th:text="${error}">Erro.</p></article>
+
     <div class="grid margin-bottom">
-        <div class="s12 m4"><article class="border round padding primary-container"><p class="small-text">Sendo adotados</p><h4 th:text="${#lists.size(asDonor)}">0</h4></article></div>
-        <div class="s12 m4"><article class="border round padding secondary-container"><p class="small-text">Historico</p><h4 th:text="${#lists.size(history)}">0</h4></article></div>
-        <div class="s12 m4"><article class="border round padding error-container"><p class="small-text">Rejeitados</p><h4 th:text="${#lists.size(rejected)}">0</h4></article></div>
+        <div class="s12 m3"><article class="border round padding primary-container"><p class="small-text">Solicitacoes</p><h4 th:text="${#lists.size(requests)}">0</h4></article></div>
+        <div class="s12 m3"><article class="border round padding secondary-container"><p class="small-text">Sendo adotados</p><h4 th:text="${#lists.size(asDonor)}">0</h4></article></div>
+        <div class="s12 m3"><article class="border round padding surface-container"><p class="small-text">Historico</p><h4 th:text="${#lists.size(history)}">0</h4></article></div>
+        <div class="s12 m3"><article class="border round padding error-container"><p class="small-text">Rejeitados</p><h4 th:text="${#lists.size(rejected)}">0</h4></article></div>
     </div>
 
     <div class="tabs margin-bottom">
-        <a class="active" data-ui="#tab-donor">Sendo adotados</a>
+        <a class="active" data-ui="#tab-requests">Solicitacoes</a>
+        <a data-ui="#tab-donor">Sendo adotados</a>
         <a data-ui="#tab-history">Historico</a>
         <a data-ui="#tab-rejected">Rejeitados</a>
     </div>
 
-    <div id="tab-donor" class="page active">
+    <div id="tab-requests" class="page active">
+        <article th:if="${#lists.isEmpty(requests)}" class="border round padding center-align"><i class="large">inbox</i><p>Nenhuma solicitacao de adocao.</p></article>
+        <article th:each="request : ${requests}" class="border round padding margin-bottom surface-container-low">
+            <div class="grid middle-align">
+                <section class="s12 m5">
+                    <p class="small-text bold">Animal</p>
+                    <div class="row middle-align wrap">
+                        <img th:if="${request.petPhoto != null}" th:src="${request.petPhoto}" class="adoption-photo round" alt="Foto do pet">
+                        <div th:unless="${request.petPhoto != null}" class="adoption-placeholder round primary-container center-align middle-align"><i class="large">pets</i></div>
+                        <div class="max padding">
+                            <h6 th:text="${request.petName}">Pet</h6>
+                            <p class="small-text grey-text" th:text="${request.speciesName} + ' • ' + ${request.breedName} + ' • ' + ${request.ageDescription} + ' • ' + ${request.sizeDescription}">Dados</p>
+                            <a class="button border round" th:href="@{/pets/{cpf}/{nome}(cpf=${request.petOwner},nome=${request.petName},from='adocoes')}"><i>more_horiz</i><span>Ver detalhes</span></a>
+                        </div>
+                    </div>
+                </section>
+                <section class="s12 m5">
+                    <p class="small-text bold">Solicitante</p>
+                    <div class="row middle-align wrap">
+                        <img th:if="${request.adopterPhoto != null && !request.adopterPhoto.isBlank()}" th:src="${request.adopterPhoto}" class="adoption-avatar circle" alt="Foto do solicitante">
+                        <div th:unless="${request.adopterPhoto != null && !request.adopterPhoto.isBlank()}" class="adoption-avatar circle secondary-container center-align middle-align"><i class="large">account_circle</i></div>
+                        <div class="max padding">
+                            <h6 th:text="${request.adopterName}">Solicitante</h6>
+                            <p class="small-text grey-text" th:text="|@${request.adopterUsername}|">@username</p>
+                            <a class="button border round" th:href="@{/perfil/{username}(username=${request.adopterUsername})}"><i>more_horiz</i><span>Ver detalhes</span></a>
+                        </div>
+                    </div>
+                </section>
+                <section class="s12 m2 right-align">
+                    <form th:action="@{/adocoes/solicitacoes/aceitar}" method="post" class="margin-bottom">
+                        <input type="hidden" name="startDate" th:value="${request.startDate}">
+                        <input type="hidden" name="adopterCpf" th:value="${request.adopterCpf}">
+                        <input type="hidden" name="petName" th:value="${request.petName}">
+                        <button type="submit" class="primary round"><i>check</i><span>Aceitar</span></button>
+                    </form>
+                    <form th:action="@{/adocoes/solicitacoes/recusar}" method="post">
+                        <input type="hidden" name="startDate" th:value="${request.startDate}">
+                        <input type="hidden" name="adopterCpf" th:value="${request.adopterCpf}">
+                        <input type="hidden" name="petName" th:value="${request.petName}">
+                        <button type="submit" class="border round"><i>close</i><span>Recusar</span></button>
+                    </form>
+                </section>
+            </div>
+        </article>
+    </div>
+
+    <div id="tab-donor" class="page">
         <div th:replace="~{pet/my-adoptions :: adoptionList(${asDonor}, 'Adotante', false)}"></div>
     </div>
     <div id="tab-history" class="page">
@@ -74,7 +126,7 @@
                     <div class="max padding">
                         <div class="row middle-align wrap">
                             <h6 class="max" th:text="${adoption.petName}">Pet</h6>
-                            <span class="chip border" th:text="${adoption.statusDescription}">Status</span>
+                            <span class="chip" th:classappend="${adoption.statusDescription == 'Adotado'} ? ' green white-text' : ' border'" th:text="${adoption.statusDescription}">Status</span>
                         </div>
                         <p class="small-text grey-text" th:text="${adoption.speciesName} + ' • ' + ${adoption.breedName} + ' • ' + ${adoption.ageDescription} + ' • ' + ${adoption.sizeDescription}">Dados</p>
                         <p class="small-text" th:text="${personLabel + ': ' + (personLabel == 'Adotante' ? adoption.adopterName : adoption.ownerName)}">Pessoa</p>
@@ -85,20 +137,8 @@
                             <span th:if="${adoption.hasReturnRequest}" class="chip error small">Solicitacao de devolucao</span>
                         </div>
                     </div>
-                    <button type="button" class="border round" th:attr="data-ui='#adoption-details-' + ${adoption.idHtml}"><i>more_horiz</i><span>Ver detalhes</span></button>
+                    <a th:if="${!history || adoption.status == 'EM_ANDAMENTO'}" class="button border round" th:href="@{/adocoes/status(startDate=${adoption.startDate},adopterCpf=${adoption.adopterCpf},petName=${adoption.petName},petOwner=${adoption.petOwner})}"><i>more_horiz</i><span>Ver detalhes</span></a>
                 </div>
-                <dialog th:id="'adoption-details-' + ${adoption.idHtml}" class="large round padding">
-                    <h5 th:text="${adoption.petName}">Pet</h5>
-                    <div class="grid">
-                        <div class="s12 m6"><p class="small-text grey-text">Adotante</p><p th:text="${adoption.adopterName}">Nome</p></div>
-                        <div class="s12 m6"><p class="small-text grey-text">Doador</p><p th:text="${adoption.ownerName}">Nome</p></div>
-                        <div class="s12 m6"><p class="small-text grey-text">Inicio</p><p th:text="${adoption.formattedStartDate}">Data</p></div>
-                        <div class="s12 m6"><p class="small-text grey-text">Prazo/fim</p><p th:text="${adoption.deadlineDescription}">Data</p></div>
-                        <div class="s12 m6"><p class="small-text grey-text">Tipo</p><p th:text="${adoption.typeDescription}">Tipo</p></div>
-                        <div class="s12 m6"><p class="small-text grey-text">Status</p><p th:text="${adoption.statusDescription}">Status</p></div>
-                    </div>
-                    <nav class="right-align margin-top"><button type="button" class="border" th:attr="data-ui='#adoption-details-' + ${adoption.idHtml}">Fechar</button></nav>
-                </dialog>
             </article>
         </div>
     </div>

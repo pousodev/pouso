@@ -6,6 +6,7 @@ import com.pouso.repository.PetRepository;
 import com.pouso.service.PetService;
 import com.pouso.service.PetValidationException;
 import jakarta.servlet.http.HttpSession;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,7 +37,9 @@ public class PetController {
         if (cpf == null) return "redirect:/login";
 
         model.addAttribute("myPets", petRepository.listByOwner(cpf));
-        model.addAttribute("adopting", adoptionRepository.listActiveAsAdopter(cpf));
+        model.addAttribute("currentAdoptionsByPet", adoptionRepository.listCurrentForOwnerPets(cpf).stream()
+                .collect(Collectors.toMap(a -> a.getPetOwner() + "|" + a.getPetName(), a -> a, (first, ignored) -> first)));
+        model.addAttribute("adopting", adoptionRepository.listCurrentAndRequestedAsAdopter(cpf));
         return "pet/my-pets";
     }
 
@@ -140,5 +143,24 @@ public class PetController {
         model.addAttribute("bairroSelecionado", bairro);
 
         return "pet/search";
+    }
+
+    @GetMapping("/{cpf}/{nome}")
+    public String detail(
+            @RequestParam(required = false) String from,
+            @org.springframework.web.bind.annotation.PathVariable String cpf,
+            @org.springframework.web.bind.annotation.PathVariable String nome,
+            HttpSession session,
+            Model model
+    ) {
+        String sessionCpf = (String) session.getAttribute("cpf");
+        if (sessionCpf == null) return "redirect:/login";
+
+        var pet = petRepository.findByOwnerAndName(cpf, nome);
+        if (pet == null) return "redirect:/pets/search";
+
+        model.addAttribute("pet", pet);
+        model.addAttribute("backUrl", "adocoes".equals(from) ? "/adocoes" : "/pets/search");
+        return "pet/detail";
     }
 }

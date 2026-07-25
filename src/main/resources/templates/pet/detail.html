@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/app}">
+<head>
+    <title>Pet</title>
+    <style>
+        .pet-detail-photo { width: 100%; max-height: 360px; object-fit: cover; }
+    </style>
+</head>
+<body>
+<section layout:fragment="content">
+    <header class="row wrap middle-align margin-bottom">
+        <a th:href="${backUrl}" class="button circle transparent" aria-label="Voltar"><i>arrow_back</i></a>
+        <div class="max">
+            <h3 class="no-margin" th:text="${pet.nome}">Pet</h3>
+            <p class="no-margin opacity" th:text="${pet.titulo}">Especie</p>
+        </div>
+    </header>
+
+    <article class="surface-container-low round large-padding">
+        <div class="grid large-space">
+            <div class="s12 m5">
+                <img th:if="${pet.fotoPet != null && !pet.fotoPet.isBlank()}" th:src="${pet.fotoPet}" class="pet-detail-photo round" alt="Foto do pet">
+                <div th:unless="${pet.fotoPet != null && !pet.fotoPet.isBlank()}" class="primary-container round large-padding center-align"><i class="extra">pets</i></div>
+            </div>
+            <div class="s12 m7">
+                <h5 th:text="${pet.nome}">Nome</h5>
+                <p th:text="${pet.bio != null && !pet.bio.isBlank() ? pet.bio : 'Sem bio informada.'}">Bio</p>
+                <div class="row wrap margin-top">
+                    <span class="chip border" th:text="${pet.especieNome}">Especie</span>
+                    <span class="chip border" th:text="${pet.racaNome}">Raca</span>
+                    <span class="chip border" th:text="${pet.sexoDescricao}">Sexo</span>
+                    <span class="chip border" th:text="${pet.idadeDescricao}">Idade</span>
+                    <span class="chip border" th:text="${pet.porteDescricao}">Porte</span>
+                    <span class="chip border" th:text="${pet.isPermanente ? 'Adocao permanente' : 'Adocao temporaria'}">Tipo</span>
+                    <span class="chip border" th:text="${pet.isCastrado ? 'Castrado' : 'Nao castrado'}">Castracao</span>
+                </div>
+                <div class="divider margin"></div>
+                <p class="small-text opacity">Responsavel</p>
+                <p class="no-margin" th:text="${pet.donoNome}">Dono</p>
+            </div>
+        </div>
+    </article>
+</section>
+</body>
+</html>
