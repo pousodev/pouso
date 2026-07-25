@@ -15,6 +15,7 @@ public class AdoptionSummary {
     private String petName;
     private String petOwner;
     private String ownerName;
+    private String ownerUsername;
     private String adopterUsername;
     private String adopterPhone;
     private String adopterPhoto;
@@ -34,22 +35,23 @@ public class AdoptionSummary {
                           String petOwner, String ownerName, LocalDate endDate, LocalDate requestDate,
                           String status, Boolean permanent, String speciesName, String breedName,
                           String sex, String size, LocalDate birthDate, String petPhoto, boolean hasReturnRequest) {
-        this(startDate, adopterCpf, adopterName, petName, petOwner, ownerName, null, null, null,
+        this(startDate, adopterCpf, adopterName, petName, petOwner, ownerName, null, null, null, null,
             endDate, requestDate, status, permanent, speciesName, breedName, sex, size, birthDate,
             petPhoto, hasReturnRequest);
     }
 
     public AdoptionSummary(LocalDate startDate, String adopterCpf, String adopterName, String petName,
-                          String petOwner, String ownerName, String adopterUsername, String adopterPhone,
-                          String adopterPhoto, LocalDate endDate, LocalDate requestDate, String status,
-                          Boolean permanent, String speciesName, String breedName, String sex, String size,
-                          LocalDate birthDate, String petPhoto, boolean hasReturnRequest) {
+                           String petOwner, String ownerName, String adopterUsername, String adopterPhone,
+                           String adopterPhoto, String ownerUsername, LocalDate endDate, LocalDate requestDate, String status,
+                           Boolean permanent, String speciesName, String breedName, String sex, String size,
+                           LocalDate birthDate, String petPhoto, boolean hasReturnRequest) {
         this.startDate = startDate;
         this.adopterCpf = adopterCpf;
         this.adopterName = adopterName;
         this.petName = petName;
         this.petOwner = petOwner;
         this.ownerName = ownerName;
+        this.ownerUsername = ownerUsername;
         this.adopterUsername = adopterUsername;
         this.adopterPhone = adopterPhone;
         this.adopterPhoto = adopterPhoto;
@@ -72,6 +74,7 @@ public class AdoptionSummary {
     public String getPetName() { return petName; }
     public String getPetOwner() { return petOwner; }
     public String getOwnerName() { return ownerName; }
+    public String getOwnerUsername() { return ownerUsername; }
     public String getAdopterUsername() { return adopterUsername; }
     public String getAdopterPhone() { return adopterPhone; }
     public String getAdopterPhoto() { return adopterPhoto; }
@@ -108,10 +111,12 @@ public class AdoptionSummary {
         if (status == null) return "-";
         if ("EM_ANDAMENTO".equals(status) && Boolean.TRUE.equals(permanent)) return "Adotado";
         return switch (status) {
+            case "PENDENTE" -> "Aguardando decisao";
             case "EM_ANDAMENTO" -> "Em andamento";
             case "SOLICITADA" -> "Solicitada";
             case "CONCLUIDA" -> "Concluida";
             case "CANCELADA" -> "Cancelada";
+            case "RECUSADA" -> "Recusada";
             default -> status;
         };
     }

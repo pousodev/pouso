@@ -2,6 +2,7 @@ package com.pouso.controller;
 
 import com.pouso.model.Endereco;
 import com.pouso.model.User;
+import com.pouso.service.UserService;
 import com.pouso.repository.PetRepository;
 import com.pouso.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
@@ -18,13 +19,16 @@ public class UserController {
 
     private final UserRepository userRepository;
     private final PetRepository petRepository;
+    private final UserService userService;
 
     public UserController(
         UserRepository userRepository,
-        PetRepository petRepository
+        PetRepository petRepository,
+       UserService userService
     ) {
         this.userRepository = userRepository;
         this.petRepository = petRepository;
+        this.userService = userService;
     }
 
     @GetMapping("/user")
@@ -287,5 +291,23 @@ public class UserController {
         }
 
         return null;
+    }
+
+    @GetMapping("/notifications")
+    public String notifications(
+        HttpSession session,
+        Model model
+    ) {
+        String cpf = (String) session.getAttribute("cpf");
+
+        if (cpf == null) {
+            return "redirect:/login";
+        }
+    model.addAttribute(
+        "notifications",
+        userService.listarNotificacoes(cpf)
+    );
+
+        return "user/notifications";
     }
 }

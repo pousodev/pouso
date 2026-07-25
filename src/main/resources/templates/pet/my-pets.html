@@ -61,17 +61,18 @@
                                 <p class="small-text no-margin">Adocao atual</p>
                                 <h6 class="no-margin" th:text="${currentAdoption.statusDescription + ' por ' + currentAdoption.adopterName}">Adotado por pessoa</h6>
                             </div>
-                            <a class="button border round white-text" th:href="@{/adocoes/status(startDate=${currentAdoption.startDate},adopterCpf=${currentAdoption.adopterCpf},petName=${currentAdoption.petName},petOwner=${currentAdoption.petOwner})}"><i>more_horiz</i><span>Ver detalhes</span></a>
+                            <a class="button border round white-text" th:href="@{/adocoes/status(startDate=${currentAdoption.startDate},adopterUsername=${currentAdoption.adopterUsername},petName=${currentAdoption.petName},ownerUsername=${currentAdoption.ownerUsername})}"><i>more_horiz</i><span>Ver detalhes</span></a>
                         </div>
                     </article>
                     <div class="row wrap small-space margin-top">
                         <span class="chip border small" th:text="${pet.sexoDescricao}">Sexo</span>
                         <span class="chip border small" th:text="${pet.isCastrado ? 'Castrado' : 'Nao castrado'}">Castracao</span>
-                        <span class="chip border small" th:text="${pet.isPermanente ? 'Permanente' : 'Temporario'}">Tipo</span>
+                        <span class="chip border small" th:text="${pet.isPermanente == null ? 'Nao informado' : (pet.isPermanente ? 'Permanente' : 'Temporario')}">Tipo</span>
                         <span class="chip border small" th:text="'Cadastro: ' + ${pet.dataCadastroFormatada}">Cadastro</span>
                     </div>
                     </th:block>
                 </div>
+                <a class="button border round" th:href="@{/pets/{username}/{nome}(username=${pet.donoUsername}, nome=${pet.nome})}"><i>more_horiz</i><span>Ver detalhes</span></a>
             </div>
         </article>
     </div>
@@ -99,7 +100,7 @@
                         <span th:if="${adoption.hasReturnRequest}" class="chip error small">Solicitacao de devolucao</span>
                     </div>
                 </div>
-                <a th:if="${adoption.status != 'SOLICITADA'}" class="button border round" th:href="@{/adocoes/status(startDate=${adoption.startDate},adopterCpf=${adoption.adopterCpf},petName=${adoption.petName},petOwner=${adoption.petOwner})}"><i>more_horiz</i><span>Ver detalhes</span></a>
+                <a class="button border round" th:href="@{/adocoes/status(startDate=${adoption.startDate},adopterUsername=${adoption.adopterUsername},petName=${adoption.petName},ownerUsername=${adoption.ownerUsername})}"><i>more_horiz</i><span>Ver detalhes</span></a>
             </div>
         </article>
     </div>

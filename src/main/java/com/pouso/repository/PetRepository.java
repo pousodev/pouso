@@ -5,11 +5,13 @@ import org.springframework.stereotype.Repository;
 
 import com.pouso.model.Pet;
 import com.pouso.model.PetSolicitacao;
+import com.pouso.dto.PetDetalheDTO;
 import com.pouso.dto.PetOwnerListDTO.OwnerItem;
 import com.pouso.dto.PetOwnerListDTO.PetItem;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.time.LocalDate;
 
@@ -200,13 +202,14 @@ public class PetRepository {
 
     public List<PetSolicitacao> listByOwner(String cpf) {
         String sql = """
-                SELECT pt.nome, pt.cpf_dono, dono.nome AS dono_nome,
+                SELECT pt.nome, pt.cpf_dono, dono.nome AS dono_nome, dono_u.username AS dono_username,
                        especie.nome AS especie_nome, raca.nome AS raca_nome,
                        pt.sexo, pt.porte, pt.bio, pt.is_castrado, pt.is_permanente,
                        pt.data_nasc, pt.data_cadastro, pt.foto_pet,
                        pt.status_aprovacao, adm.nome AS admin_nome, pt.is_banned
                 FROM pet pt
                 INNER JOIN pessoa dono ON dono.cpf = pt.cpf_dono
+                INNER JOIN usuario dono_u ON dono_u.cpf = pt.cpf_dono
                 INNER JOIN tipo_pet raca ON raca.id = pt.tipo_pet
                 LEFT JOIN tipo_pet especie ON especie.id = raca.tipo_mae
                 LEFT JOIN pessoa adm ON adm.cpf = pt.adm_aprovou
@@ -214,7 +217,8 @@ public class PetRepository {
                 ORDER BY pt.data_cadastro DESC, pt.nome ASC
             """;
 
-        return jdbc.query(sql, (rs, rowNum) -> new PetSolicitacao(
+        return jdbc.query(sql, (rs, rowNum) -> {
+            PetSolicitacao pet = new PetSolicitacao(
             rs.getString("nome"),
             rs.getString("cpf_dono"),
             rs.getString("dono_nome"),
@@ -231,48 +235,56 @@ public class PetRepository {
             rs.getString("admin_nome"),
             rs.getString("foto_pet"),
             rs.getBoolean("is_banned")
-        ), cpf);
+            );
+            pet.setDonoUsername(rs.getString("dono_username"));
+            return pet;
+        }, cpf);
     }
 
     public PetSolicitacao findByOwnerAndName(String cpfDono, String nome) {
         String sql = """
-                SELECT pt.nome, pt.cpf_dono, dono.nome AS dono_nome,
+                SELECT pt.nome, pt.cpf_dono, dono.nome AS dono_nome, dono_u.username AS dono_username,
                        especie.nome AS especie_nome, raca.nome AS raca_nome,
                        pt.sexo, pt.porte, pt.bio, pt.is_castrado, pt.is_permanente,
                        pt.data_nasc, pt.data_cadastro, pt.foto_pet,
                        pt.status_aprovacao, adm.nome AS admin_nome, pt.is_banned
                 FROM pet pt
                 INNER JOIN pessoa dono ON dono.cpf = pt.cpf_dono
+                INNER JOIN usuario dono_u ON dono_u.cpf = pt.cpf_dono
                 INNER JOIN tipo_pet raca ON raca.id = pt.tipo_pet
                 LEFT JOIN tipo_pet especie ON especie.id = raca.tipo_mae
                 LEFT JOIN pessoa adm ON adm.cpf = pt.adm_aprovou
                 WHERE pt.cpf_dono = ? AND pt.nome = ?
             """;
 
-        List<PetSolicitacao> pets = jdbc.query(sql, (rs, rowNum) -> new PetSolicitacao(
-            rs.getString("nome"),
-            rs.getString("cpf_dono"),
-            rs.getString("dono_nome"),
-            rs.getString("especie_nome"),
-            rs.getString("raca_nome"),
-            rs.getString("sexo"),
-            rs.getString("porte"),
-            rs.getString("bio"),
-            (Boolean) rs.getObject("is_castrado"),
-            (Boolean) rs.getObject("is_permanente"),
-            rs.getObject("data_nasc", LocalDate.class),
-            rs.getObject("data_cadastro", LocalDate.class),
-            rs.getString("status_aprovacao"),
-            rs.getString("admin_nome"),
-            rs.getString("foto_pet"),
-            rs.getBoolean("is_banned")
-        ), cpfDono, nome);
+        List<PetSolicitacao> pets = jdbc.query(sql, (rs, rowNum) -> {
+            PetSolicitacao pet = new PetSolicitacao(
+                rs.getString("nome"),
+                rs.getString("cpf_dono"),
+                rs.getString("dono_nome"),
+                rs.getString("especie_nome"),
+                rs.getString("raca_nome"),
+                rs.getString("sexo"),
+                rs.getString("porte"),
+                rs.getString("bio"),
+                (Boolean) rs.getObject("is_castrado"),
+                (Boolean) rs.getObject("is_permanente"),
+                rs.getObject("data_nasc", LocalDate.class),
+                rs.getObject("data_cadastro", LocalDate.class),
+                rs.getString("status_aprovacao"),
+                rs.getString("admin_nome"),
+                rs.getString("foto_pet"),
+                rs.getBoolean("is_banned")
+            );
+            pet.setDonoUsername(rs.getString("dono_username"));
+            return pet;
+        }, cpfDono, nome);
         return pets.isEmpty() ? null : pets.get(0);
     }
 
     public PetSolicitacao findByOwnerUsernameAndName(String username, String nome) {
         String sql = """
-                SELECT pt.nome, pt.cpf_dono, dono.nome AS dono_nome,
+                SELECT pt.nome, pt.cpf_dono, dono.nome AS dono_nome, u.username AS dono_username,
                        especie.nome AS especie_nome, raca.nome AS raca_nome,
                        pt.sexo, pt.porte, pt.bio, pt.is_castrado, pt.is_permanente,
                        pt.data_nasc, pt.data_cadastro, pt.foto_pet,
@@ -286,24 +298,28 @@ public class PetRepository {
                 WHERE u.username = ? AND pt.nome = ?
             """;
 
-        List<PetSolicitacao> pets = jdbc.query(sql, (rs, rowNum) -> new PetSolicitacao(
-            rs.getString("nome"),
-            rs.getString("cpf_dono"),
-            rs.getString("dono_nome"),
-            rs.getString("especie_nome"),
-            rs.getString("raca_nome"),
-            rs.getString("sexo"),
-            rs.getString("porte"),
-            rs.getString("bio"),
-            (Boolean) rs.getObject("is_castrado"),
-            (Boolean) rs.getObject("is_permanente"),
-            rs.getObject("data_nasc", LocalDate.class),
-            rs.getObject("data_cadastro", LocalDate.class),
-            rs.getString("status_aprovacao"),
-            rs.getString("admin_nome"),
-            rs.getString("foto_pet"),
-            rs.getBoolean("is_banned")
-        ), username, nome);
+        List<PetSolicitacao> pets = jdbc.query(sql, (rs, rowNum) -> {
+            PetSolicitacao pet = new PetSolicitacao(
+                rs.getString("nome"),
+                rs.getString("cpf_dono"),
+                rs.getString("dono_nome"),
+                rs.getString("especie_nome"),
+                rs.getString("raca_nome"),
+                rs.getString("sexo"),
+                rs.getString("porte"),
+                rs.getString("bio"),
+                (Boolean) rs.getObject("is_castrado"),
+                (Boolean) rs.getObject("is_permanente"),
+                rs.getObject("data_nasc", LocalDate.class),
+                rs.getObject("data_cadastro", LocalDate.class),
+                rs.getString("status_aprovacao"),
+                rs.getString("admin_nome"),
+                rs.getString("foto_pet"),
+                rs.getBoolean("is_banned")
+            );
+            pet.setDonoUsername(rs.getString("dono_username"));
+            return pet;
+        }, username, nome);
         return pets.isEmpty() ? null : pets.get(0);
     }
 
@@ -412,13 +428,14 @@ public class PetRepository {
     }
 public List<PetSolicitacao> listarAprovadosPorDono(String cpfDono) {
     String sql = """
-            SELECT pt.nome, pt.cpf_dono, dono.nome AS dono_nome,
+            SELECT pt.nome, pt.cpf_dono, dono.nome AS dono_nome, dono_u.username AS dono_username,
                    especie.nome AS especie_nome, raca.nome AS raca_nome,
                    pt.sexo, pt.porte, pt.bio, pt.is_castrado, pt.is_permanente,
                    pt.data_nasc, pt.data_cadastro, pt.foto_pet,
                    pt.status_aprovacao, adm.nome AS admin_nome
             FROM pet pt
             INNER JOIN pessoa dono ON dono.cpf = pt.cpf_dono
+            INNER JOIN usuario dono_u ON dono_u.cpf = pt.cpf_dono
             INNER JOIN tipo_pet raca ON raca.id = pt.tipo_pet
             LEFT JOIN tipo_pet especie ON especie.id = raca.tipo_mae
             LEFT JOIN pessoa adm ON adm.cpf = pt.adm_aprovou
@@ -426,7 +443,8 @@ public List<PetSolicitacao> listarAprovadosPorDono(String cpfDono) {
             ORDER BY pt.data_cadastro DESC
         """;
 
-    return jdbc.query(sql, (rs, rowNum) -> new PetSolicitacao(
+    return jdbc.query(sql, (rs, rowNum) -> {
+        PetSolicitacao pet = new PetSolicitacao(
         rs.getString("nome"),
         rs.getString("cpf_dono"),
         rs.getString("dono_nome"),
@@ -442,7 +460,10 @@ public List<PetSolicitacao> listarAprovadosPorDono(String cpfDono) {
         rs.getString("status_aprovacao"),
         rs.getString("admin_nome"),
         rs.getString("foto_pet")
-    ), cpfDono);
+        );
+        pet.setDonoUsername(rs.getString("dono_username"));
+        return pet;
+    }, cpfDono);
 }
 
     public void aprovar(String nomePet, String cpfDono, String cpfAdmin) {
@@ -501,12 +522,16 @@ public List<PetSolicitacao> listarAprovadosPorDono(String cpfDono) {
                 p.is_permanente,
                 p.is_castrado,
                 p.adm_aprovou,
-                p.foto_pet
+                p.foto_pet,
+                u.username AS dono_username
 
             FROM pet p
 
             INNER JOIN endereco e
                 ON p.cpf_dono = e.usuario_cpf
+
+            INNER JOIN usuario u
+                ON u.cpf = p.cpf_dono
 
             WHERE p.status_aprovacao = 'APROVADO' AND p.is_banned = FALSE
 
@@ -525,7 +550,8 @@ AND (?::varchar IS NULL OR e.bairro = ?)
 
                 sql,
 
-                (rs, rowNum) -> new Pet(
+                (rs, rowNum) -> {
+                    Pet pet = new Pet(
 
                         rs.getString("nome"),
                         rs.getString("cpf_dono"),
@@ -543,7 +569,10 @@ AND (?::varchar IS NULL OR e.bairro = ?)
                         rs.getBoolean("is_castrado"),
                         rs.getString("adm_aprovou"),
                         rs.getString("foto_pet")
-                ),
+                    );
+                    pet.setDonoUsername(rs.getString("dono_username"));
+                    return pet;
+                },
 
                 isPermanente,
                 isPermanente,
@@ -602,6 +631,55 @@ AND (?::varchar IS NULL OR e.bairro = ?)
 }
 
 
+
+    public Optional<PetDetalheDTO> buscarDetalhe(String cpfDono, String nome) {
+        String sql = """
+                SELECT pt.nome, pt.cpf_dono, dono.nome AS dono_nome, dono_u.username AS dono_username,
+                       especie.nome AS especie_nome, raca.nome AS raca_nome,
+                       pt.sexo, pt.porte, pt.bio, pt.is_castrado, pt.is_permanente,
+                       pt.data_nasc, pt.foto_pet, pt.status_aprovacao,
+                       sp.usa_medicamento, sp.condicao_especial,
+                       ende.cidade, ende.bairro,
+                       (
+                           SELECT a.status::text FROM adocao a
+                           WHERE a.pet_nome = pt.nome AND a.pet_dono = pt.cpf_dono
+                              AND a.status IN ('SOLICITADA', 'EM_ANDAMENTO')
+                           LIMIT 1
+                       ) AS adocao_atual_status
+                FROM pet pt
+                INNER JOIN pessoa dono ON dono.cpf = pt.cpf_dono
+                INNER JOIN usuario dono_u ON dono_u.cpf = pt.cpf_dono
+                INNER JOIN tipo_pet raca ON raca.id = pt.tipo_pet
+                LEFT JOIN tipo_pet especie ON especie.id = raca.tipo_mae
+                LEFT JOIN saude_pet sp ON sp.pet_nome = pt.nome AND sp.pet_dono = pt.cpf_dono
+                LEFT JOIN endereco ende ON ende.usuario_cpf = pt.cpf_dono
+                WHERE pt.cpf_dono = ? AND pt.nome = ?
+            """;
+
+        List<PetDetalheDTO> resultado = jdbc.query(sql, (rs, rowNum) -> new PetDetalheDTO(
+            rs.getString("nome"),
+            rs.getString("cpf_dono"),
+            rs.getString("dono_nome"),
+            rs.getString("dono_username"),
+            rs.getString("especie_nome"),
+            rs.getString("raca_nome"),
+            rs.getString("sexo"),
+            rs.getString("porte"),
+            rs.getString("bio"),
+            (Boolean) rs.getObject("is_castrado"),
+            (Boolean) rs.getObject("is_permanente"),
+            rs.getObject("data_nasc", LocalDate.class),
+            rs.getString("foto_pet"),
+            rs.getString("status_aprovacao"),
+            (Boolean) rs.getObject("usa_medicamento"),
+            (Boolean) rs.getObject("condicao_especial"),
+            rs.getString("cidade"),
+            rs.getString("bairro"),
+            rs.getString("adocao_atual_status")
+        ), cpfDono, nome);
+
+        return resultado.isEmpty() ? Optional.empty() : Optional.of(resultado.get(0));
+    }
 
     public List<String> listarCidades() {
 

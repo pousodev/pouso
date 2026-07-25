@@ -15,13 +15,18 @@
     <div class="row middle-align wrap margin-bottom">
         <div class="max">
             <h4>Adoções</h4>
-            <p class="small-text grey-text">Acompanhe seus pets que estao sendo adotados por outras pessoas, historico e rejeicoes.</p>
+            <p class="small-text grey-text">Acompanhe suas solicitacoes, pets que estao sendo adotados por outras pessoas, historico e rejeicoes.</p>
         </div>
         <a th:href="@{/pets}" class="button border round"><i>pets</i><span>Ver pets</span></a>
     </div>
 
-    <article class="green white-text round large-padding elevate margin-bottom" th:if="${success}"><h5 class="no-margin" th:text="${success}">Sucesso.</h5></article>
-    <article class="error-container round padding margin-bottom" th:if="${error}"><p class="no-margin" th:text="${error}">Erro.</p></article>
+    <article class="green white-text round padding margin-bottom" th:if="${success}">
+        <span th:text="${success}">Sucesso.</span>
+    </article>
+
+    <article class="error white-text round padding margin-bottom" th:if="${error}">
+        <span th:text="${error}">Erro.</span>
+    </article>
 
     <div class="grid margin-bottom">
         <div class="s12 m3"><article class="border round padding primary-container"><p class="small-text">Solicitacoes</p><h4 th:text="${#lists.size(requests)}">0</h4></article></div>
@@ -31,7 +36,7 @@
     </div>
 
     <div class="tabs margin-bottom">
-        <a class="active" data-ui="#tab-requests">Solicitacoes</a>
+        <a class="active" data-ui="#tab-requests">Solicitações</a>
         <a data-ui="#tab-donor">Sendo adotados</a>
         <a data-ui="#tab-history">Historico</a>
         <a data-ui="#tab-rejected">Rejeitados</a>
@@ -49,7 +54,7 @@
                         <div class="max padding">
                             <h6 th:text="${request.petName}">Pet</h6>
                             <p class="small-text grey-text" th:text="${request.speciesName} + ' • ' + ${request.breedName} + ' • ' + ${request.ageDescription} + ' • ' + ${request.sizeDescription}">Dados</p>
-                            <a class="button border round" th:href="@{/pets/{cpf}/{nome}(cpf=${request.petOwner},nome=${request.petName},from='adocoes')}"><i>more_horiz</i><span>Ver detalhes</span></a>
+                            <a class="button border round" th:href="@{/pets/{username}/{nome}(username=${request.ownerUsername},nome=${request.petName},from='adocoes')}"><i>more_horiz</i><span>Ver detalhes</span></a>
                         </div>
                     </div>
                 </section>
@@ -68,13 +73,13 @@
                 <section class="s12 m2 right-align">
                     <form th:action="@{/adocoes/solicitacoes/aceitar}" method="post" class="margin-bottom">
                         <input type="hidden" name="startDate" th:value="${request.startDate}">
-                        <input type="hidden" name="adopterCpf" th:value="${request.adopterCpf}">
+                        <input type="hidden" name="adopterUsername" th:value="${request.adopterUsername}">
                         <input type="hidden" name="petName" th:value="${request.petName}">
                         <button type="submit" class="primary round"><i>check</i><span>Aceitar</span></button>
                     </form>
                     <form th:action="@{/adocoes/solicitacoes/recusar}" method="post">
                         <input type="hidden" name="startDate" th:value="${request.startDate}">
-                        <input type="hidden" name="adopterCpf" th:value="${request.adopterCpf}">
+                        <input type="hidden" name="adopterUsername" th:value="${request.adopterUsername}">
                         <input type="hidden" name="petName" th:value="${request.petName}">
                         <button type="submit" class="border round"><i>close</i><span>Recusar</span></button>
                     </form>
@@ -82,7 +87,6 @@
             </div>
         </article>
     </div>
-
     <div id="tab-donor" class="page">
         <div th:replace="~{pet/my-adoptions :: adoptionList(${asDonor}, 'Adotante', false)}"></div>
     </div>
@@ -137,7 +141,7 @@
                             <span th:if="${adoption.hasReturnRequest}" class="chip error small">Solicitacao de devolucao</span>
                         </div>
                     </div>
-                    <a th:if="${!history || adoption.status == 'EM_ANDAMENTO'}" class="button border round" th:href="@{/adocoes/status(startDate=${adoption.startDate},adopterCpf=${adoption.adopterCpf},petName=${adoption.petName},petOwner=${adoption.petOwner})}"><i>more_horiz</i><span>Ver detalhes</span></a>
+                    <a th:if="${!history || adoption.status == 'EM_ANDAMENTO'}" class="button border round" th:href="@{/adocoes/status(startDate=${adoption.startDate},adopterUsername=${adoption.adopterUsername},petName=${adoption.petName},ownerUsername=${adoption.ownerUsername})}"><i>more_horiz</i><span>Ver detalhes</span></a>
                 </div>
             </article>
         </div>

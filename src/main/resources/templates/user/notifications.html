@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/app}">
+
+<head>
+    <title>Buscar pets</title>
+
+    <th:block layout:fragment="head-extra">
+    </th:block>
+      <link rel="stylesheet"
+              th:href="@{/css/notifications.css}">
+</head>
+
+<body>
+    <section layout:fragment="content">
+        <div id="contents">
+   <aside>
+
+        <ul id="list">
+<li th:each="notification : ${notifications}"
+    th:attr="
+        data-title=${#temporals.format(notification.data,'dd/MM/yyyy HH:mm')},
+        data-text=${notification.mensagem}"
+    onclick="
+        document.getElementById('title').innerText = this.dataset.title;
+        document.getElementById('text').innerText = this.dataset.text;
+    ">
+
+    <strong th:text="${#temporals.format(notification.data,'dd/MM/yyyy HH:mm')}"></strong>
+    <br>
+
+    <span th:text="${#strings.abbreviate(notification.mensagem,40)}"></span>
+
+    <span th:if="${!notification.is_lido}">
+    [Não Lido]
+    </span>
+
+</li>
+
+        </ul>
+
+    </aside>
+
+    <section id="notificationtext">
+
+        <h1 id="title">
+            Selecione uma notificação
+        </h1>
+
+        <p id="text">
+            Clique em uma notificação para visualizar a mensagem.
+        </p>
+
+    </section>
+    </div>
+</section>
+</body>
+</html>

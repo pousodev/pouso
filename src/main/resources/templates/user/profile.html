@@ -246,8 +246,8 @@
                         <a class="round border padding
                                   row wrap middle-align pet-card"
                            th:if="${isSudoView != true}"
-                           th:href="@{/pet/{username}/{nome}(
-                                username=${profileUser.username},
+                           th:href="@{/pets/{username}/{nome}(
+                                username=${pet.donoUsername},
                                 nome=${pet.nome}
                             )}">
 

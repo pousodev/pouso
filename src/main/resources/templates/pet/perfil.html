@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/app}">
+
+<head>
+    <title th:text="${pet.nome}">Perfil do pet</title>
+
+    <th:block layout:fragment="head-extra">
+        <link rel="stylesheet"
+              th:href="@{/css/pet-form.css}">
+    </th:block>
+</head>
+
+<body>
+<section layout:fragment="content">
+
+    <article class="green white-text round large-padding bottom-margin" th:if="${success}">
+        <span th:text="${success}">Sucesso.</span>
+    </article>
+
+    <article class="error white-text round large-padding bottom-margin" th:if="${error}">
+        <span th:text="${error}">Erro.</span>
+    </article>
+
+    <article class="primary-container round large-padding bottom-margin">
+        <div class="row wrap middle-align">
+            <i class="extra">pets</i>
+
+            <div class="max">
+                <h3 class="no-margin" th:text="${pet.nome}">Nome do pet</h3>
+
+                <p class="no-margin opacity"
+                   th:text="${pet.titulo} + (${pet.racaNome} != null ? ' • ' + ${pet.racaNome} : '')">
+                    Espécie • Raça
+                </p>
+            </div>
+
+            <a th:href="@{/pets/search}"
+               class="button circle transparent"
+               aria-label="Voltar">
+                <i>close</i>
+            </a>
+        </div>
+    </article>
+
+    <article class="round large-padding bottom-margin"
+              th:classappend="${pet.rejeitado} ? ' error white-text' : ' tertiary-container'"
+              th:if="${isOwner && !pet.aprovado}">
+        <i>info</i>
+        <span th:if="${pet.pendente}">Este pet está aguardando moderação. Só você (o doador) consegue vê-lo por enquanto.</span>
+        <span th:if="${pet.rejeitado}">Este pet foi rejeitado pela moderação. Só você (o doador) consegue vê-lo.</span>
+    </article>
+
+    <div class="grid">
+
+        <aside class="s12 m4 l3">
+            <article class="surface-container-high round padding
+                            center-align pet-photo-panel">
+
+                <div class="pet-avatar circle
+                            primary-container
+                            middle-align center-align">
+
+                    <img th:if="${pet.fotoPet != null && !pet.fotoPet.isBlank()}"
+                         th:src="${pet.fotoPet}"
+                         th:alt="|Foto de ${pet.nome}|">
+
+                    <i class="extra"
+                       th:unless="${pet.fotoPet != null && !pet.fotoPet.isBlank()}">
+                        pets
+                    </i>
+                </div>
+
+                <span class="chip round"
+                      th:classappend="${pet.disponivel} ? ' green white-text' : (${pet.aprovado} ? ' surface' : ' tertiary-container')"
+                      th:text="${pet.statusExibicao}">
+                    Status
+                </span>
+            </article>
+        </aside>
+
+        <div class="s12 m8 l9">
+
+            <article class="round large-padding surface-container" th:if="${pet.bio != null && !pet.bio.isBlank()}">
+                <h6 class="no-margin bottom-margin">Descrição</h6>
+                <p class="no-margin" th:text="${pet.bio}">Sobre o pet.</p>
+            </article>
+
+            <article class="round large-padding surface-container top-margin">
+                <h6 class="no-margin bottom-margin">Dados</h6>
+
+                <div class="grid">
+                    <div class="s6 m4">
+                        <p class="small-text opacity no-margin">Espécie</p>
+                        <p class="no-margin" th:text="${pet.titulo}">Espécie</p>
+                    </div>
+                    <div class="s6 m4">
+                        <p class="small-text opacity no-margin">Raça</p>
+                        <p class="no-margin" th:text="${pet.racaNome} ?: '-'">Raça</p>
+                    </div>
+                    <div class="s6 m4">
+                        <p class="small-text opacity no-margin">Sexo</p>
+                        <p class="no-margin" th:text="${pet.sexoDescricao}">Sexo</p>
+                    </div>
+                    <div class="s6 m4">
+                        <p class="small-text opacity no-margin">Porte</p>
+                        <p class="no-margin" th:text="${pet.porteDescricao}">Porte</p>
+                    </div>
+                    <div class="s6 m4">
+                        <p class="small-text opacity no-margin">Idade</p>
+                        <p class="no-margin" th:text="${pet.idadeDescricao}">Idade</p>
+                    </div>
+                    <div class="s6 m4" th:if="${pet.localizacao != null}">
+                        <p class="small-text opacity no-margin">Localização</p>
+                        <p class="no-margin" th:text="${pet.localizacao}">Localização</p>
+                    </div>
+                </div>
+            </article>
+
+            <article class="round large-padding surface-container top-margin"
+                      th:if="${(pet.isCastrado != null && pet.isCastrado) || (pet.usaMedicamento != null && pet.usaMedicamento) || (pet.condicaoEspecial != null && pet.condicaoEspecial)}">
+                <h6 class="no-margin bottom-margin">Tags</h6>
+
+                <div class="row wrap gap">
+                    <span class="chip border" th:if="${pet.isCastrado != null && pet.isCastrado}">
+                        <i>check_circle</i>
+                        <span>Castrado</span>
+                    </span>
+                    <span class="chip border" th:if="${pet.usaMedicamento != null && pet.usaMedicamento}">
+                        <i>medication</i>
+                        <span>Uso de medicamento</span>
+                    </span>
+                    <span class="chip border" th:if="${pet.condicaoEspecial != null && pet.condicaoEspecial}">
+                        <i>favorite</i>
+                        <span>Condição especial</span>
+                    </span>
+                </div>
+            </article>
+
+            <article class="round large-padding surface-container top-margin">
+                <h6 class="no-margin bottom-margin">Doador</h6>
+
+                <a class="row middle-align gap"
+                   style="text-decoration: none; color: inherit;"
+                   th:href="@{/perfil/{username}(username=${pet.donoUsername})}">
+                    <i>account_circle</i>
+                    <span th:text="${pet.donoNome}">Nome do doador</span>
+                    <i>chevron_right</i>
+                </a>
+            </article>
+
+            <article class="round large-padding surface-container top-margin"
+                      th:if="${!isOwner && pet.aprovado}">
+                <h6 class="no-margin bottom-margin">Adoção</h6>
+
+                <div th:if="${pet.disponivel && loggedIn}">
+                    <form th:action="@{/pets/{username}/{nome}/adotar(username=${pet.donoUsername}, nome=${pet.nome})}"
+                          method="post">
+                        <fieldset class="bottom-margin">
+                            <legend>Tipo de adoção</legend>
+                            <div class="row wrap gap">
+                                <label class="radio">
+                                    <input type="radio" name="permanente" value="true" checked>
+                                    <span>Permanente</span>
+                                </label>
+                                <label class="radio">
+                                    <input type="radio" name="permanente" value="false">
+                                    <span>Temporária</span>
+                                </label>
+                            </div>
+                        </fieldset>
+
+                        <div class="field label border bottom-margin" style="max-width: 16rem;">
+                            <input type="date" name="dataFim">
+                            <label>Até quando (se temporária)</label>
+                        </div>
+
+                        <button type="submit" class="primary">
+                            <i>favorite</i>
+                            <span>Solicitar adoção</span>
+                        </button>
+                    </form>
+                </div>
+
+                <p class="no-margin" th:if="${pet.disponivel && !loggedIn}">
+                    <a th:href="@{/login}">Entre na sua conta</a> para solicitar a adoção deste pet.
+                </p>
+
+                <p class="no-margin opacity" th:unless="${pet.disponivel}">
+                    Este pet já está em processo de adoção.
+                </p>
+            </article>
+
+        </div>
+    </div>
+
+</section>
+</body>
+</html>

@@ -15,6 +15,7 @@ public class Pet {
     private Boolean isCastrado;
     private String admAprovou;
     private String fotoPet;
+    private String donoUsername;
 
     public Pet(
         String nome, String cpfDono, String bio, String sexo, Integer tipoPet,
@@ -46,6 +47,8 @@ public class Pet {
 
     public String getFotoPet() { return fotoPet; }
     public void setFotoPet(String fotoPet) { this.fotoPet = fotoPet; }
+    public String getDonoUsername() { return donoUsername; }
+    public void setDonoUsername(String donoUsername) { this.donoUsername = donoUsername; }
 
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }

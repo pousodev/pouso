@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.pouso.model.Notificacao;
 @Repository
 public class UserRepository {
 
@@ -242,4 +243,30 @@ public class UserRepository {
             return review;
         }, cpf);
     }
+
+    public List<Notificacao> listarNotificacoes(String cpf) {
+
+    String sql = """
+        SELECT
+            pessoa_cpf,
+            data,
+            mensagem,
+            is_lido
+        FROM notificacao
+        WHERE pessoa_cpf = ?
+        ORDER BY data DESC
+        """;
+List<Notificacao> notificacoes = jdbc.query(
+    sql,
+    (rs, rowNum) -> new Notificacao(
+        rs.getString("pessoa_cpf"),
+        rs.getTimestamp("data").toLocalDateTime(),
+        rs.getString("mensagem"),
+        rs.getBoolean("is_lido")
+    ),
+    cpf
+);
+
+    return notificacoes;
+}
 }

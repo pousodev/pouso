@@ -11,6 +11,8 @@ import com.pouso.model.SaudePet;
 import com.pouso.repository.PetRepository;
 import com.pouso.repository.SaudePetRepository;
 import com.pouso.repository.TipoPetRepository;
+import com.pouso.repository.UserRepository;
+import com.pouso.dto.PetDetalheDTO;
 import com.pouso.dto.PetOwnerListDTO;
 import com.pouso.dto.PetOwnerListDTO.OwnerItem;
 import com.pouso.dto.PetOwnerListDTO.PetItem;
@@ -25,15 +27,18 @@ public class PetService {
     private final PetRepository petRepository;
     private final SaudePetRepository saudePetRepository;
     private final TipoPetRepository tipoPetRepository;
+    private final UserRepository userRepository;
 
     public PetService(
         PetRepository petRepository,
         SaudePetRepository saudePetRepository,
-        TipoPetRepository tipoPetRepository
+        TipoPetRepository tipoPetRepository,
+        UserRepository userRepository
     ) {
         this.petRepository = petRepository;
         this.saudePetRepository = saudePetRepository;
         this.tipoPetRepository = tipoPetRepository;
+        this.userRepository = userRepository;
     }
 
     @Transactional
@@ -138,5 +143,25 @@ public class PetService {
 
     public List<String> listarBairros() {
         return petRepository.listarBairros();
+    }
+
+    public PetDetalheDTO buscarDetalhe(String cpfDono, String nome, String sessionCpf) {
+        PetDetalheDTO pet = petRepository.buscarDetalhe(cpfDono, nome)
+            .orElseThrow(() -> new PetValidationException("Pet não encontrado"));
+
+        boolean isOwner = sessionCpf != null && sessionCpf.equals(cpfDono);
+        if (!isOwner && !pet.isAprovado()) {
+            throw new PetValidationException("Pet não encontrado");
+        }
+
+        return pet;
+    }
+
+    public PetDetalheDTO buscarDetalhePorUsername(String usernameDono, String nome, String sessionCpf) {
+        var dono = userRepository.buscarPorUsername(usernameDono);
+        if (dono == null) {
+            throw new PetValidationException("Pet não encontrado");
+        }
+        return buscarDetalhe(dono.getCpf(), nome, sessionCpf);
     }
 }

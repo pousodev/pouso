@@ -9,6 +9,7 @@ public class PetSolicitacao {
     private String nome;
     private String cpfDono;
     private String donoNome;
+    private String donoUsername;
     private String especieNome;
     private String racaNome;
     private String sexo;
@@ -60,6 +61,8 @@ public class PetSolicitacao {
     public String getNome() { return nome; }
     public String getCpfDono() { return cpfDono; }
     public String getDonoNome() { return donoNome; }
+    public String getDonoUsername() { return donoUsername; }
+    public void setDonoUsername(String donoUsername) { this.donoUsername = donoUsername; }
     public String getEspecieNome() { return especieNome; }
     public String getRacaNome() { return racaNome; }
     public String getSexo() { return sexo; }
