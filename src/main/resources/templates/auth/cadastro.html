@@ -169,6 +169,116 @@
 
             </div>
 
+            <article class="surface round large-padding top-margin">
+                <header class="bottom-margin">
+                    <h5 class="no-margin">Endere&ccedil;o</h5>
+                </header>
+
+                <div class="grid">
+                    <div class="s12 m4">
+                        <div class="field label border">
+
+                            <input id="cep"
+                                   name="cep"
+                                   type="text"
+                                   inputmode="numeric"
+                                   maxlength="8"
+                                   autocomplete="postal-code"
+                                   required>
+
+                            <label for="cep">CEP</label>
+                            <i>location_on</i>
+                        </div>
+                    </div>
+
+                    <div class="s12 m8">
+                        <div class="field label border">
+
+                            <input id="rua"
+                                   name="rua"
+                                   type="text"
+                                   autocomplete="address-line1"
+                                   required>
+
+                            <label for="rua">Rua</label>
+                            <i>signpost</i>
+                        </div>
+                    </div>
+
+                    <div class="s12 m4">
+                        <div class="field label border">
+
+                            <input id="numero"
+                                   name="numero"
+                                   type="text"
+                                   autocomplete="address-line2"
+                                   maxlength="6"
+                                   required>
+
+                            <label for="numero">N&uacute;mero</label>
+                            <i>tag</i>
+                        </div>
+                    </div>
+
+                    <div class="s12 m8">
+                        <div class="field label border">
+
+                            <input id="complemento"
+                                   name="complemento"
+                                   type="text"
+                                   maxlength="45">
+
+                            <label for="complemento">Complemento</label>
+                            <i>home</i>
+                        </div>
+                    </div>
+
+                    <div class="s12 m5">
+                        <div class="field label border">
+
+                            <input id="bairro"
+                                   name="bairro"
+                                   type="text"
+                                   maxlength="45"
+                                   required>
+
+                            <label for="bairro">Bairro</label>
+                            <i>map</i>
+                        </div>
+                    </div>
+
+                    <div class="s12 m5">
+                        <div class="field label border">
+
+                            <input id="cidade"
+                                   name="cidade"
+                                   type="text"
+                                   maxlength="35"
+                                   autocomplete="address-level2"
+                                   required>
+
+                            <label for="cidade">Cidade</label>
+                            <i>location_city</i>
+                        </div>
+                    </div>
+
+                    <div class="s12 m2">
+                        <div class="field label border">
+
+                            <input id="uf"
+                                   name="uf"
+                                   type="text"
+                                   maxlength="2"
+                                   autocomplete="address-level1"
+                                   required>
+
+                            <label for="uf">Estado</label>
+                            <i>flag</i>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
             <nav class="right-align top-margin">
                 <a th:href="@{/login}"
                    class="button border">

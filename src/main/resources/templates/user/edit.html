@@ -9,7 +9,7 @@
 
     <th:block layout:fragment="head-extra">
         <link rel="stylesheet"
-              th:href="@{/css/user-edit.css}">
+              th:href="@{/css/edit-user.css}">
     </th:block>
 </head>
 
@@ -247,18 +247,179 @@
                 </article>
 
                 <article class="surface round large-padding bottom-margin">
-                    <header class="row wrap middle-align">
-                        <div class="max">
+                    <header class="bottom-margin">
+                        <div>
                             <h5 class="no-margin">Segurança</h5>
 
+                            <p class="no-margin opacity">
+                                Preencha somente se quiser trocar sua senha.
+                            </p>
+                        </div>
+                    </header>
+
+                    <div class="grid">
+                        <div class="s12 m4">
+                            <div class="field label border">
+
+                                <input id="currentPassword"
+                                       name="currentPassword"
+                                       type="password"
+                                       autocomplete="current-password">
+
+                                <label for="currentPassword">Senha atual</label>
+                                <i>lock</i>
+                            </div>
                         </div>
 
-                        <a th:href="@{/conta/senha}"
-                           class="button border">
-                            <i>lock_reset</i>
-                            <span>Alterar senha</span>
-                        </a>
+                        <div class="s12 m4">
+                            <div class="field label border">
+
+                                <input id="newPassword"
+                                       name="newPassword"
+                                       type="password"
+                                       autocomplete="new-password">
+
+                                <label for="newPassword">Nova senha</label>
+                                <i>lock_reset</i>
+                            </div>
+                        </div>
+
+                        <div class="s12 m4">
+                            <div class="field label border">
+
+                                <input id="confirmPassword"
+                                       name="confirmPassword"
+                                       type="password"
+                                       autocomplete="new-password">
+
+                                <label for="confirmPassword">
+                                    Confirmar senha
+                                </label>
+                                <i>done</i>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="surface round large-padding bottom-margin">
+                    <header class="bottom-margin">
+                        <h5 class="no-margin">Endere&ccedil;o</h5>
+
+                        <p class="no-margin opacity">
+                            Localiza&ccedil;&atilde;o usada no seu perfil.
+                        </p>
                     </header>
+
+                    <div class="grid">
+                        <div class="s12 m4">
+                            <div class="field label border">
+
+                                <input id="cep"
+                                       name="cep"
+                                       type="text"
+                                       inputmode="numeric"
+                                       maxlength="8"
+                                       autocomplete="postal-code"
+                                       th:value="${endereco?.cep}"
+                                       required>
+
+                                <label for="cep">CEP</label>
+                                <i>location_on</i>
+                            </div>
+                        </div>
+
+                        <div class="s12 m8">
+                            <div class="field label border">
+
+                                <input id="rua"
+                                       name="rua"
+                                       type="text"
+                                       autocomplete="address-line1"
+                                       th:value="${endereco?.rua}"
+                                       required>
+
+                                <label for="rua">Rua</label>
+                                <i>signpost</i>
+                            </div>
+                        </div>
+
+                        <div class="s12 m4">
+                            <div class="field label border">
+
+                                <input id="numero"
+                                       name="numero"
+                                       type="text"
+                                       autocomplete="address-line2"
+                                       maxlength="6"
+                                       th:value="${endereco?.numero}"
+                                       required>
+
+                                <label for="numero">N&uacute;mero</label>
+                                <i>tag</i>
+                            </div>
+                        </div>
+
+                        <div class="s12 m8">
+                            <div class="field label border">
+
+                                <input id="complemento"
+                                       name="complemento"
+                                       type="text"
+                                       maxlength="45"
+                                       th:value="${endereco?.complemento}">
+
+                                <label for="complemento">Complemento</label>
+                                <i>home</i>
+                            </div>
+                        </div>
+
+                        <div class="s12 m5">
+                            <div class="field label border">
+
+                                <input id="bairro"
+                                       name="bairro"
+                                       type="text"
+                                       maxlength="45"
+                                       th:value="${endereco?.bairro}"
+                                       required>
+
+                                <label for="bairro">Bairro</label>
+                                <i>map</i>
+                            </div>
+                        </div>
+
+                        <div class="s12 m5">
+                            <div class="field label border">
+
+                                <input id="cidade"
+                                       name="cidade"
+                                       type="text"
+                                       maxlength="35"
+                                       autocomplete="address-level2"
+                                       th:value="${endereco?.cidade}"
+                                       required>
+
+                                <label for="cidade">Cidade</label>
+                                <i>location_city</i>
+                            </div>
+                        </div>
+
+                        <div class="s12 m2">
+                            <div class="field label border">
+
+                                <input id="uf"
+                                       name="uf"
+                                       type="text"
+                                       maxlength="2"
+                                       autocomplete="address-level1"
+                                       th:value="${endereco?.uf}"
+                                       required>
+
+                                <label for="uf">Estado</label>
+                                <i>flag</i>
+                            </div>
+                        </div>
+                    </div>
                 </article>
 
                 <nav class="row wrap right-align top-margin">

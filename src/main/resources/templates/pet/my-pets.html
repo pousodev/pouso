@@ -14,7 +14,7 @@
     <div class="row middle-align wrap margin-bottom">
         <div class="max">
             <h4>Pets</h4>
-            <p class="small-text grey-text">Veja seus pets cadastrados e os pets que voce esta adotando.</p>
+            <p class="small-text grey-text">Veja seus pets cadastrados, adocoes atuais e solicitacoes enviadas.</p>
         </div>
         <a th:href="@{/pets/cadastrar}" class="button round"><i>add</i><span>Cadastrar pet</span></a>
     </div>
@@ -49,18 +49,30 @@
                 <img th:if="${pet.fotoPet != null}" th:src="${pet.fotoPet}" class="pet-foto round" alt="Foto do pet">
                 <div th:unless="${pet.fotoPet != null}" class="pet-placeholder round primary-container center-align middle-align"><i class="large">pets</i></div>
                 <div class="max padding">
+                    <th:block th:with="currentAdoption=${currentAdoptionsByPet[pet.cpfDono + '|' + pet.nome]}">
                     <div class="row middle-align wrap">
                         <h6 class="max" th:text="${pet.nome}">Pet</h6>
                         <span class="chip border" th:text="${pet.statusAprovacao}">Status</span>
                     </div>
                     <p class="small-text grey-text" th:text="${pet.especieNome} + ' • ' + ${pet.racaNome} + ' • ' + ${pet.idadeDescricao} + ' • ' + ${pet.porteDescricao}">Dados</p>
+                    <article th:if="${currentAdoption != null}" class="green white-text round padding margin-top">
+                        <div class="row middle-align wrap">
+                            <div class="max">
+                                <p class="small-text no-margin">Adocao atual</p>
+                                <h6 class="no-margin" th:text="${currentAdoption.statusDescription + ' por ' + currentAdoption.adopterName}">Adotado por pessoa</h6>
+                            </div>
+                            <a class="button border round white-text" th:href="@{/adocoes/status(startDate=${currentAdoption.startDate},adopterUsername=${currentAdoption.adopterUsername},petName=${currentAdoption.petName},ownerUsername=${currentAdoption.ownerUsername})}"><i>more_horiz</i><span>Ver detalhes</span></a>
+                        </div>
+                    </article>
                     <div class="row wrap small-space margin-top">
                         <span class="chip border small" th:text="${pet.sexoDescricao}">Sexo</span>
                         <span class="chip border small" th:text="${pet.isCastrado ? 'Castrado' : 'Nao castrado'}">Castracao</span>
-                        <span class="chip border small" th:text="${pet.isPermanente ? 'Permanente' : 'Temporario'}">Tipo</span>
+                        <span class="chip border small" th:text="${pet.isPermanente == null ? 'Nao informado' : (pet.isPermanente ? 'Permanente' : 'Temporario')}">Tipo</span>
                         <span class="chip border small" th:text="'Cadastro: ' + ${pet.dataCadastroFormatada}">Cadastro</span>
                     </div>
+                    </th:block>
                 </div>
+                <a class="button border round" th:href="@{/pets/{username}/{nome}(username=${pet.donoUsername}, nome=${pet.nome})}"><i>more_horiz</i><span>Ver detalhes</span></a>
             </div>
         </article>
     </div>
@@ -68,7 +80,7 @@
     <div id="tab-adopting" class="page">
         <article th:if="${#lists.isEmpty(adopting)}" class="border round padding center-align">
             <i class="large">inbox</i>
-            <p>Voce nao esta adotando nenhum pet agora.</p>
+            <p>Voce nao esta adotando nem solicitou nenhum pet agora.</p>
         </article>
         <article th:each="adoption : ${adopting}" class="border round padding margin-bottom surface-container-low">
             <div class="row middle-align wrap">
@@ -77,7 +89,7 @@
                 <div class="max padding">
                     <div class="row middle-align wrap">
                         <h6 class="max" th:text="${adoption.petName}">Pet</h6>
-                        <span class="chip border" th:text="${adoption.statusDescription}">Status</span>
+                        <span class="chip" th:classappend="${adoption.statusDescription == 'Adotado'} ? ' green white-text' : ' border'" th:text="${adoption.statusDescription}">Status</span>
                     </div>
                     <p class="small-text grey-text" th:text="${adoption.speciesName} + ' • ' + ${adoption.breedName} + ' • ' + ${adoption.ageDescription} + ' • ' + ${adoption.sizeDescription}">Dados</p>
                     <p class="small-text" th:text="'Dono: ' + ${adoption.ownerName}">Dono</p>
@@ -88,6 +100,7 @@
                         <span th:if="${adoption.hasReturnRequest}" class="chip error small">Solicitacao de devolucao</span>
                     </div>
                 </div>
+                <a class="button border round" th:href="@{/adocoes/status(startDate=${adoption.startDate},adopterUsername=${adoption.adopterUsername},petName=${adoption.petName},ownerUsername=${adoption.ownerUsername})}"><i>more_horiz</i><span>Ver detalhes</span></a>
             </div>
         </article>
     </div>

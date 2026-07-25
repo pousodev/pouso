@@ -2,10 +2,10 @@
 <html lang="pt-BR"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/admin}">
+      layout:decorate="~{layouts/app}">
 
 <head>
-    <title th:text="${pet.nome}">Detalhes do pet</title>
+    <title th:text="${pet.nome}">Perfil do pet</title>
 
     <th:block layout:fragment="head-extra">
         <link rel="stylesheet"
@@ -18,6 +18,10 @@
 
     <article class="green white-text round large-padding bottom-margin" th:if="${success}">
         <span th:text="${success}">Sucesso.</span>
+    </article>
+
+    <article class="error white-text round large-padding bottom-margin" th:if="${error}">
+        <span th:text="${error}">Erro.</span>
     </article>
 
     <article class="primary-container round large-padding bottom-margin">
@@ -33,7 +37,7 @@
                 </p>
             </div>
 
-            <a th:href="@{/sudo/pets}"
+            <a th:href="@{/pets/search}"
                class="button circle transparent"
                aria-label="Voltar">
                 <i>close</i>
@@ -42,16 +46,23 @@
     </article>
 
     <article class="round large-padding bottom-margin"
-             th:classappend="${pet.banned} ? ' error white-text' : ' tertiary-container'">
-        <i>admin_panel_settings</i>
-        <span th:if="${pet.banned}">Este pet está banido e não aparece nas buscas públicas.</span>
-        <span th:unless="${pet.banned}">Você pode banir este pet para removê-lo das buscas públicas.</span>
+              th:classappend="${pet.rejeitado} ? ' error white-text' : ' tertiary-container'"
+              th:if="${isOwner && !pet.aprovado}">
+        <i>info</i>
+        <span th:if="${pet.pendente}">Este pet está aguardando moderação. Só você (o doador) consegue vê-lo por enquanto.</span>
+        <span th:if="${pet.rejeitado}">Este pet foi rejeitado pela moderação. Só você (o doador) consegue vê-lo.</span>
     </article>
 
     <div class="grid">
+
         <aside class="s12 m4 l3">
-            <article class="surface-container-high round padding center-align pet-photo-panel">
-                <div class="pet-avatar circle primary-container middle-align center-align">
+            <article class="surface-container-high round padding
+                            center-align pet-photo-panel">
+
+                <div class="pet-avatar circle
+                            primary-container
+                            middle-align center-align">
+
                     <img th:if="${pet.fotoPet != null && !pet.fotoPet.isBlank()}"
                          th:src="${pet.fotoPet}"
                          th:alt="|Foto de ${pet.nome}|">
@@ -63,19 +74,15 @@
                 </div>
 
                 <span class="chip round"
-                      th:classappend="${pet.aprovado} ? ' green white-text' : (${pet.rejeitado} ? ' error white-text' : ' tertiary-container')"
-                      th:text="${pet.aprovado} ? 'Aceito' : (${pet.rejeitado} ? 'Rejeitado' : 'Aguardando moderação')">
+                      th:classappend="${pet.disponivel} ? ' green white-text' : (${pet.aprovado} ? ' surface' : ' tertiary-container')"
+                      th:text="${pet.statusExibicao}">
                     Status
-                </span>
-
-                <span class="chip round error white-text top-margin" th:if="${pet.banned}">
-                    <i>block</i>
-                    <span>Banido</span>
                 </span>
             </article>
         </aside>
 
         <div class="s12 m8 l9">
+
             <article class="round large-padding surface-container" th:if="${pet.bio != null && !pet.bio.isBlank()}">
                 <h6 class="no-margin bottom-margin">Descrição</h6>
                 <p class="no-margin" th:text="${pet.bio}">Sobre o pet.</p>
@@ -105,15 +112,15 @@
                         <p class="small-text opacity no-margin">Idade</p>
                         <p class="no-margin" th:text="${pet.idadeDescricao}">Idade</p>
                     </div>
-                    <div class="s6 m4">
-                        <p class="small-text opacity no-margin">Cadastro</p>
-                        <p class="no-margin" th:text="${pet.dataCadastroFormatada}">Cadastro</p>
+                    <div class="s6 m4" th:if="${pet.localizacao != null}">
+                        <p class="small-text opacity no-margin">Localização</p>
+                        <p class="no-margin" th:text="${pet.localizacao}">Localização</p>
                     </div>
                 </div>
             </article>
 
             <article class="round large-padding surface-container top-margin"
-                     th:if="${(pet.isCastrado != null && pet.isCastrado) || (pet.isPermanente != null && pet.isPermanente)}">
+                      th:if="${(pet.isCastrado != null && pet.isCastrado) || (pet.usaMedicamento != null && pet.usaMedicamento) || (pet.condicaoEspecial != null && pet.condicaoEspecial)}">
                 <h6 class="no-margin bottom-margin">Tags</h6>
 
                 <div class="row wrap gap">
@@ -121,9 +128,13 @@
                         <i>check_circle</i>
                         <span>Castrado</span>
                     </span>
-                    <span class="chip border" th:if="${pet.isPermanente != null && pet.isPermanente}">
-                        <i>home</i>
-                        <span>Adoção permanente</span>
+                    <span class="chip border" th:if="${pet.usaMedicamento != null && pet.usaMedicamento}">
+                        <i>medication</i>
+                        <span>Uso de medicamento</span>
+                    </span>
+                    <span class="chip border" th:if="${pet.condicaoEspecial != null && pet.condicaoEspecial}">
+                        <i>favorite</i>
+                        <span>Condição especial</span>
                     </span>
                 </div>
             </article>
@@ -133,34 +144,55 @@
 
                 <a class="row middle-align gap"
                    style="text-decoration: none; color: inherit;"
-                   th:href="@{/sudo/users/{username}(username=${ownerUsername})}">
+                   th:href="@{/perfil/{username}(username=${pet.donoUsername})}">
                     <i>account_circle</i>
                     <span th:text="${pet.donoNome}">Nome do doador</span>
                     <i>chevron_right</i>
                 </a>
             </article>
 
-            <article class="round large-padding surface-container top-margin">
-                <h6 class="no-margin bottom-margin">Ação de sudo</h6>
+            <article class="round large-padding surface-container top-margin"
+                      th:if="${!isOwner && pet.aprovado}">
+                <h6 class="no-margin bottom-margin">Adoção</h6>
 
-                <form th:if="${!pet.banned}"
-                      th:action="@{/sudo/pets/{username}/{nome}/ban(username=${ownerUsername},nome=${pet.nome})}"
-                      method="post">
-                    <button class="error" type="submit">
-                        <i>block</i>
-                        <span>Banir pet</span>
-                    </button>
-                </form>
+                <div th:if="${pet.disponivel && loggedIn}">
+                    <form th:action="@{/pets/{username}/{nome}/adotar(username=${pet.donoUsername}, nome=${pet.nome})}"
+                          method="post">
+                        <fieldset class="bottom-margin">
+                            <legend>Tipo de adoção</legend>
+                            <div class="row wrap gap">
+                                <label class="radio">
+                                    <input type="radio" name="permanente" value="true" checked>
+                                    <span>Permanente</span>
+                                </label>
+                                <label class="radio">
+                                    <input type="radio" name="permanente" value="false">
+                                    <span>Temporária</span>
+                                </label>
+                            </div>
+                        </fieldset>
 
-                <form th:if="${pet.banned}"
-                      th:action="@{/sudo/pets/{username}/{nome}/unban(username=${ownerUsername},nome=${pet.nome})}"
-                      method="post">
-                    <button class="border" type="submit">
-                        <i>check_circle</i>
-                        <span>Desbanir pet</span>
-                    </button>
-                </form>
+                        <div class="field label border bottom-margin" style="max-width: 16rem;">
+                            <input type="date" name="dataFim">
+                            <label>Até quando (se temporária)</label>
+                        </div>
+
+                        <button type="submit" class="primary">
+                            <i>favorite</i>
+                            <span>Solicitar adoção</span>
+                        </button>
+                    </form>
+                </div>
+
+                <p class="no-margin" th:if="${pet.disponivel && !loggedIn}">
+                    <a th:href="@{/login}">Entre na sua conta</a> para solicitar a adoção deste pet.
+                </p>
+
+                <p class="no-margin opacity" th:unless="${pet.disponivel}">
+                    Este pet já está em processo de adoção.
+                </p>
             </article>
+
         </div>
     </div>
 

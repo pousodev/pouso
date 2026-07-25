@@ -37,9 +37,11 @@
                     <strong th:text="${currentUser.username}">username</strong>
                 </span>
             </a>
-            <a>
+            <a th:href="@{/notifications}" class="chip medium primary-container">
                 <i>notifications</i>
             </a>
+
+
             <a th:href="@{/perfil}" class="button circle transparent" aria-label="Abrir perfil">
                 <img th:if="${currentUser.fotoPerfil != null and !currentUser.fotoPerfil.isBlank()}" class="circle header-avatar" th:src="${currentUser.fotoPerfil}" alt="Avatar">
                 <i th:unless="${currentUser.fotoPerfil != null and !currentUser.fotoPerfil.isBlank()}">account_circle</i>

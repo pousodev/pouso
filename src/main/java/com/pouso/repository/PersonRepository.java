@@ -66,6 +66,33 @@ public class PersonRepository {
         jdbc.update(sql, cpf, username, telefone, genero);
     }
 
+    public void inserirEndereco(
+        String cpf,
+        String cep,
+        String rua,
+        String numero,
+        String complemento,
+        String bairro,
+        String cidade,
+        String uf
+    ) {
+        String sql = """
+                INSERT INTO endereco (
+                    usuario_cpf,
+                    cep,
+                    rua,
+                    numero,
+                    complemento,
+                    bairro,
+                    cidade,
+                    uf
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """;
+
+        jdbc.update(sql, cpf, cep, rua, numero, complemento, bairro, cidade, uf);
+    }
+
     public Person buscarPorEmail(String email) {
         String sql = """
                 SELECT cpf, nome, email, senha

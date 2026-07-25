@@ -53,8 +53,8 @@
 
 
     <a
-        th:href="@{/pets/{cpf}/{nome}(
-            cpf=${pet.cpfDono},
+        th:href="@{/pets/{username}/{nome}(
+            username=${pet.donoUsername},
             nome=${pet.nome}
         )}"
         class="button">

@@ -1,0 +1,96 @@
+#conteudo {
+    padding-left: 3%;
+    padding-right: 4%;
+}
+#contents{
+    display: flex;
+    gap: 5%;
+}
+section[layout\:fragment="content"]{
+    display: flex;
+    gap: 3rem;
+    margin-top: 2rem;
+}
+
+/* Lista */
+
+aside{
+    width: 35%;
+}
+
+#list{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#list li{
+    padding: 1rem 1.2rem;
+    margin-bottom: 1rem;
+    border-radius: 16px;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    transition: .2s;
+}
+
+#list li:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,.08);
+}
+
+#list strong{
+    display: block;
+    font-size: .9rem;
+    margin-bottom: .4rem;
+}
+
+#list span{
+    color: #666;
+    line-height: 1.5;
+}
+
+
+#notificationtext{
+    width: 60%;
+    padding: 2rem;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    min-height: 400px;
+}
+
+#notificationtext h1{
+    font-size: 2.3rem;
+    margin-bottom: 1.5rem;
+}
+
+#notificationtext p{
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+/* Indicador de não lida */
+
+.nao-lida{
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #2196f3;
+    display: inline-block;
+    margin-left: .5rem;
+}
+
+@media (max-width: 900px){
+
+    section[layout\:fragment="content"]{
+        flex-direction: column;
+    }
+
+    aside,
+    #notificationtext{
+        width: 100%;
+    }
+
+    #notificationtext{
+        min-height: auto;
+    }
+}

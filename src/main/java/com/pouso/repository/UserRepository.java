@@ -1,4 +1,5 @@
 package com.pouso.repository;
+import com.pouso.model.Endereco;
 import com.pouso.model.User;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -8,7 +9,9 @@ import java.util.Map;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.pouso.model.Notificacao;
 @Repository
 public class UserRepository {
 
@@ -70,15 +73,56 @@ public class UserRepository {
         return users.get(0);
     }
 
+    public Endereco buscarEnderecoPorCpf(String cpf) {
+        String sql = """
+                SELECT usuario_cpf, cep, rua, numero, complemento, bairro, cidade, uf
+                FROM endereco
+                WHERE usuario_cpf = ?
+            """;
+
+        List<Endereco> enderecos = jdbc.query(
+            sql,
+            (rs, rowNum) -> new Endereco(
+                rs.getString("usuario_cpf"),
+                rs.getString("cep"),
+                rs.getString("rua"),
+                rs.getString("numero"),
+                rs.getString("complemento"),
+                rs.getString("bairro"),
+                rs.getString("cidade"),
+                rs.getString("uf")
+            ),
+            cpf
+        );
+
+        if (enderecos.isEmpty()) {
+            return new Endereco(cpf, "", "", "", "", "", "", "");
+        }
+
+        return enderecos.get(0);
+    }
+
+    @Transactional
+    public void atualizarComEndereco(User user, Endereco endereco) {
+        atualizar(user);
+        salvarEndereco(endereco);
+    }
+
     public void atualizar(User user) {
    
         String sqlPessoa = """
                 UPDATE pessoa 
-                SET nome = ?, email = ? 
+                SET nome = ?, email = ?, senha = ?
                 WHERE cpf = ?
             """;
         
-        jdbc.update(sqlPessoa, user.getNome(), user.getEmail(), user.getCpf());
+        jdbc.update(
+            sqlPessoa,
+            user.getNome(),
+            user.getEmail(),
+            user.getSenha(),
+            user.getCpf()
+        );
 
         // o cast '?::genero_enum' garante que o banco reconheça a String como o enum do banco
         String sqlUsuario = """
@@ -95,6 +139,42 @@ public class UserRepository {
             user.getTelefone(), 
             user.getFotoPerfil(), 
             user.getCpf()
+        );
+    }
+
+    public void salvarEndereco(Endereco endereco) {
+        String sql = """
+                INSERT INTO endereco (
+                    usuario_cpf,
+                    cep,
+                    rua,
+                    numero,
+                    complemento,
+                    bairro,
+                    cidade,
+                    uf
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT (usuario_cpf) DO UPDATE SET
+                    cep = EXCLUDED.cep,
+                    rua = EXCLUDED.rua,
+                    numero = EXCLUDED.numero,
+                    complemento = EXCLUDED.complemento,
+                    bairro = EXCLUDED.bairro,
+                    cidade = EXCLUDED.cidade,
+                    uf = EXCLUDED.uf
+            """;
+
+        jdbc.update(
+            sql,
+            endereco.getUsuario_cpf(),
+            endereco.getCep(),
+            endereco.getRua(),
+            endereco.getNumero(),
+            endereco.getComplemento(),
+            endereco.getBairro(),
+            endereco.getCidade(),
+            endereco.getUf()
         );
     }
 
@@ -163,4 +243,30 @@ public class UserRepository {
             return review;
         }, cpf);
     }
+
+    public List<Notificacao> listarNotificacoes(String cpf) {
+
+    String sql = """
+        SELECT
+            pessoa_cpf,
+            data,
+            mensagem,
+            is_lido
+        FROM notificacao
+        WHERE pessoa_cpf = ?
+        ORDER BY data DESC
+        """;
+List<Notificacao> notificacoes = jdbc.query(
+    sql,
+    (rs, rowNum) -> new Notificacao(
+        rs.getString("pessoa_cpf"),
+        rs.getTimestamp("data").toLocalDateTime(),
+        rs.getString("mensagem"),
+        rs.getBoolean("is_lido")
+    ),
+    cpf
+);
+
+    return notificacoes;
+}
 }

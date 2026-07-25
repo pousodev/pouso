@@ -4,6 +4,7 @@ import com.pouso.dto.CadastroRequest;
 import com.pouso.model.Person;
 import com.pouso.repository.PersonRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthService {
@@ -14,6 +15,7 @@ public class AuthService {
         this.personRepository = personRepository;
     }
 
+    @Transactional
     public Person cadastrar(CadastroRequest request) {
         validarCadastro(request);
 
@@ -37,6 +39,17 @@ public class AuthService {
             request.getUsername(),
             request.getTelefone(),
             request.getGenero()
+        );
+
+        personRepository.inserirEndereco(
+            request.getCpf(),
+            request.getCep(),
+            request.getRua(),
+            request.getNumero(),
+            request.getComplemento(),
+            request.getBairro(),
+            request.getCidade(),
+            request.getUf()
         );
 
         return new Person(
@@ -107,6 +120,30 @@ public class AuthService {
             !request.getGenero().equals("F") &&
             !request.getGenero().equals("O"))) {
             throw new IllegalArgumentException("Genero invalido");
+        }
+
+        if (isBlank(request.getCep()) || request.getCep().length() != 8) {
+            throw new IllegalArgumentException("CEP deve ter 8 digitos");
+        }
+
+        if (isBlank(request.getRua())) {
+            throw new IllegalArgumentException("Rua e obrigatoria");
+        }
+
+        if (isBlank(request.getNumero())) {
+            throw new IllegalArgumentException("Numero e obrigatorio");
+        }
+
+        if (isBlank(request.getBairro())) {
+            throw new IllegalArgumentException("Bairro e obrigatorio");
+        }
+
+        if (isBlank(request.getCidade())) {
+            throw new IllegalArgumentException("Cidade e obrigatoria");
+        }
+
+        if (isBlank(request.getUf()) || request.getUf().length() != 2) {
+            throw new IllegalArgumentException("Estado deve ter 2 letras");
         }
     }
 
